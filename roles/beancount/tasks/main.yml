@@ -64,3 +64,12 @@
 - ansible.builtin.debug:
     var: output
   tags: beancount
+
+- name: Create cron job at 19:00 daily to fetch new beancount prices
+  ansible.builtin.cron:
+    name: 'update beancount prices'
+    user: '{{ ansible_ssh_user }}'
+    minute: '0'
+    hour: '19'
+    job: 'docker exec fava bean-price /bean/master.beancount  >> /mnt/pointer/bean/prices.beancount'
+  tags: beancount, cron
