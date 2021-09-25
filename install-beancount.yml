@@ -1,8 +1,0 @@
-
----
-- hosts: raspberry
-  become: yes
-  roles:
-    - docker
-    - beancount
-  tags: beancount
