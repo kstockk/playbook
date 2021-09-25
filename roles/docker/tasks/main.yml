@@ -1,6 +1,16 @@
 
 ---
 
+- name: Set Facts
+  set_fact:
+    repo: deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian buster stable
+  when: ansible_architecture == "x86_64"
+
+- name: Set Facts
+  set_fact:
+    repo: deb [arch=armhf signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian buster stable
+  when: ansible_architecture == "aarch64"
+
 - name: Install Prerequisites
   package:
     name:
@@ -26,19 +36,9 @@
     keyring: /usr/share/keyrings/docker-archive-keyring.gpg
   tags: docker
 
-- name: Add Docker Stable Repository arch=amd64
-  when: ansible_architecture == "x86_64"
+- name: Add Docker Stable Repository
   apt_repository:
-    repo: deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian buster stable
-    state: present
-    filename: docker
-    update_cache: yes
-  tags: docker
-
-- name: Add Docker Stable Repository arch=armhf
-  when: ansible_architecture == "aarch64"
-  apt_repository:
-    repo: deb [arch=armhf signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian buster stable
+    repo: '{{ repo }}'
     state: present
     filename: docker
     update_cache: yes
