@@ -26,6 +26,7 @@
   community.docker.docker_compose:
     project_src: /home/{{ ansible_ssh_user }}/docker_configs/beancount/
     build: no
+    pull: yes
   register: output
   tags: beancount
 
