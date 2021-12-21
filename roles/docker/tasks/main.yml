@@ -1,19 +1,23 @@
-
 ---
 
 - name: Set Facts
   set_fact:
-    repo: deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian buster stable
+    repo: deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable
   when: ansible_architecture == "x86_64"
+  tags: docker
 
 - name: Set Facts
   set_fact:
-    repo: deb [arch=armhf signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian buster stable
+    repo: deb [arch=armhf signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable
   when: ansible_architecture == "aarch64"
+  tags: docker
 
 - name: Install Prerequisites
-  package:
-    name:
+  apt:
+    name: '{{ packages }}'
+    state: present
+  vars:
+    packages:
       - apt-transport-https
       - ca-certificates
       - curl
@@ -26,10 +30,9 @@
       - python3-pip
       - python3-venv
       - python-setuptools
-    state: present
-  tags: packages, docker
+  tags: docker
 
-- name: Add Docker’s official GPG key
+- name: Add Docker's official GPG key
   apt_key:
     url: https://download.docker.com/linux/debian/gpg
     state: present
@@ -45,21 +48,28 @@
   tags: docker
 
 - name: Install Docker Engine 
-  package:
-    name: 
+  apt:
+    name: '{{ packages }}'
+    state: present
+  vars:
+    packages:
       - docker-ce
       - docker-ce-cli
       - containerd.io
-    state: latest
-    update_cache: yes
-  tags: packages, docker
+  tags: docker
 
-- name: Add the current user to the group 'docker'
+- name: Add 'pi' user to the group 'docker'
   ansible.builtin.user:
-    name: '{{ ansible_ssh_user }}'
+    name: pi
     shell: /bin/bash
     groups: docker
     append: yes
+  tags: docker
+
+- name: Give permissions to /var/run/docker.sock
+  file:
+    path: /var/run/docker.sock
+    mode: '660'
   tags: docker
 
 - name: Enable and start Docker service
@@ -72,6 +82,7 @@
 - name: Install docker-compose
   pip:
     name: 
+      - cryptography==2.8
       - docker-compose
     executable: pip3
-  tags: docker, pip
+  tags: docker
