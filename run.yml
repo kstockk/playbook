@@ -1,0 +1,10 @@
+
+---
+- hosts: khazpie
+  become: yes
+  
+  roles:
+    - role: duckdns
+      when: enable_duckdns | default(False)
+      become: no
+      tags: duckdns
