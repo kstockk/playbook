@@ -1,0 +1,8 @@
+---
+- name: Backup {{ docker_dir }} data (3am Every Monday)
+  cron:
+    name: "Backup {{ docker_dir }} data (3am Every Monday)"
+    weekday: "1"
+    hour: "3"
+    minute: "0"
+    job: "docker stop $(docker ps -q) && rsync -avz --delete {{ docker_dir }}/ {{ timemachine_root }}/docker_data/ && docker start $(docker ps -a -q)"
