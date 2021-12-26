@@ -8,3 +8,10 @@
       when: enable_duckdns | default(False)
       become: no
       tags: duckdns
+
+    - role: containers/homeassistant
+      when: enable_homeassistant | default(False)
+      become: no
+      tags: 
+        - homeassistant
+        - containers

@@ -1,3 +1,8 @@
 
+docker_dir: /opt/docker/data
+
+timemachine_root: /mnt/timemachine
 
 enable_duckdns: true
+
+enable_homeassistant: true

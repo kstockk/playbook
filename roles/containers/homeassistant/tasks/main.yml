@@ -1,0 +1,41 @@
+---
+- name: Check if {{ docker_dir }}/{{ container_name }} directory exists
+  stat:
+    path: "{{ docker_dir }}/{{ container_name }}"
+  register: config_dir
+
+- name: Create {{ docker_dir }}/{{ container_name }} directory if it doesn't already exist
+  file:
+    path: "{{ docker_dir }}/{{ container_name }}"
+    state: directory
+    mode: "0755"
+  when: not config_dir.stat.exists
+
+# - name: Git clone homeassistant-docker-venv
+#   ansible.builtin.git:
+#     repo: "https://github.com/tribut/homeassistant-docker-venv"
+#     dest: "{{ docker_dir }}/{{ container_name }}/docker-venv"
+#     update: yes
+
+# - name: Remove home-assistant docker container
+#   docker_container:
+#     name: home-assistant
+#     state: absent
+
+- name: Ensure that the {{ container_name }} container is created and running
+  docker_container:
+    name: homeassistant
+    image: homeassistant/home-assistant:stable
+    state: started
+    pull: yes
+    restart: yes
+    restart_policy: unless-stopped
+    network_mode: host
+    env:
+      # PUID=1000
+      # PGID=1000
+      TZ=Australia/Melbourne
+      # PACKAGES=iputils
+    volumes:
+      - "{{ docker_dir }}/{{ container_name }}:/config"
+      # - "{{ docker_dir }}/{{ container_name }}/docker-venv/run:/etc/services.d/home-assistant/run"
