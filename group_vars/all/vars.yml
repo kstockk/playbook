@@ -3,6 +3,36 @@ docker_dir: /opt/docker/data
 
 timemachine_root: /mnt/timemachine
 
+#
+# Email credentials
+#
+
+email_login: "{{ email }}"
+
+email_smtp_host: smtp.gmail.com
+
+email_smtp_port: 465
+
+email_smtp_port_startls: 587
+
+# MSMTP 
+msmtp_accounts:
+- account:   gmail
+  host:      "{{ email_smtp_host }}"
+  port:      "{{ email_smtp_port_startls }}"
+  auth:      "on"
+  from:      "{{ email }}"
+  user:      "{{ email }}"
+  password:  "{{ email_password }}"
+
+msmtp_default_account: "gmail"
+
+msmtp_alias_default : "{{ email }}"
+
+#
+#
+#
+
 enable_duckdns: true
 
 enable_timemachine: true
