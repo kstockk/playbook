@@ -4,6 +4,10 @@
   become: yes
   
   roles:
+    - role: chriswayg.msmtp-mailer
+      tags: 
+        - msmtp
+
     - role: duckdns
       when: enable_duckdns | default(False)
       become: no
