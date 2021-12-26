@@ -5,4 +5,6 @@ timemachine_root: /mnt/timemachine
 
 enable_duckdns: true
 
+enable_timemachine: true
+
 enable_homeassistant: true
