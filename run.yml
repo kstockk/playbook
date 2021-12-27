@@ -20,7 +20,13 @@
       tags: 
         - homeassistant
         - containers
-      
+
+    - role: containers/photoprism
+      when: enable_photoprism | default(False)
+      tags: 
+        - photoprism
+        - containers
+
     - role: timemachine
       when: enable_timemachine | default(False)
       tags: 
