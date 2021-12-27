@@ -8,6 +8,7 @@
   file:
     path: "{{ docker_dir }}/{{ container_name }}"
     state: directory
+    owner: "{{ username }}"
     mode: "0755"
   when: not config_dir.stat.exists
 
