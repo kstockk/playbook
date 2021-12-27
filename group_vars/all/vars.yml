@@ -1,5 +1,10 @@
 
+
+timezone: "Australia/Melbourne"
+
 docker_dir: /opt/docker/data
+
+pointer_root: /mnt/pointer
 
 timemachine_root: /mnt/timemachine
 
@@ -38,3 +43,5 @@ enable_duckdns: true
 enable_timemachine: true
 
 enable_homeassistant: true
+
+enable_photoprism: true
