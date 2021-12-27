@@ -11,11 +11,11 @@
     mode: "0755"
   when: not config_dir.stat.exists
 
-# - name: Git clone homeassistant-docker-venv
-#   ansible.builtin.git:
-#     repo: "https://github.com/tribut/homeassistant-docker-venv"
-#     dest: "{{ docker_dir }}/{{ container_name }}/docker-venv"
-#     update: yes
+- name: Git clone homeassistant-docker-venv
+  ansible.builtin.git:
+    repo: "https://github.com/tribut/homeassistant-docker-venv"
+    dest: "{{ docker_dir }}/{{ container_name }}/docker-venv"
+    update: yes
 
 # - name: Remove home-assistant docker container
 #   docker_container:
@@ -32,10 +32,10 @@
     restart_policy: unless-stopped
     network_mode: host
     env:
-      # PUID=1000
-      # PGID=1000
-      TZ=Australia/Melbourne
-      # PACKAGES=iputils
+      PUID={{ uid }}
+      PGID={{ uid }}
+      TZ={{ timezone }}
+      PACKAGES=iputils
     volumes:
-      - "{{ docker_dir }}/{{ container_name }}:/config"
-      # - "{{ docker_dir }}/{{ container_name }}/docker-venv/run:/etc/services.d/home-assistant/run"
+      - "{{ docker_dir }}/{{ container_name }}/config:/config"
+      - "{{ docker_dir }}/{{ container_name }}/docker-venv/run:/etc/services.d/home-assistant/run"
