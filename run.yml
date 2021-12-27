@@ -14,6 +14,11 @@
       - duckdns
       - cron
 
+    - role: containers/adguard
+      when: enable_adguard | default(False)
+      tags: 
+      - adguard
+
     - role: containers/homeassistant
       when: enable_homeassistant | default(False)
       tags: 

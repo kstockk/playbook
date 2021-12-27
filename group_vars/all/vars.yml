@@ -53,6 +53,8 @@ msmtp_alias_default : "{{ email }}"
 
 enable_duckdns: true
 
+enable_adguard: true
+
 enable_timemachine: true
 
 enable_homeassistant: true
