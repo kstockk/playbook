@@ -1,6 +1,13 @@
 
+#
+# Standard
+#
+
+username: "pi"
 
 uid: "1000"
+
+locale: en_AU.UTF-8
 
 timezone: "Australia/Melbourne"
 
@@ -41,7 +48,7 @@ msmtp_default_account: "gmail"
 msmtp_alias_default : "{{ email }}"
 
 #
-#
+# Services
 #
 
 enable_duckdns: true
