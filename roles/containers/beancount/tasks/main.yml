@@ -1,0 +1,65 @@
+---
+- name: Install htpasswd utility
+  apt:
+    name: apache2-utils
+    state: present
+
+- name: Ensure that the {{ container_name }} container is created and running
+  docker_container:
+    name: "{{ container_name }}"
+    image: lykhee/fava-docker:latest
+    state: started
+    pull: yes
+    restart: yes
+    restart_policy: unless-stopped
+    env:
+     "BEANCOUNT_FILE": "/bean/master.beancount"
+    volumes:
+      - "{{ beancount_root }}:/bean"
+
+- name: Ensure that the {{ container_name }}-auth container does not exist
+  docker_container:
+    name: "{{ container_name }}-auth"
+    state: absent
+
+- name: Create the {{ container_name }}-auth container
+  docker_container:
+    name: "{{ container_name }}-auth"
+    image: beevelop/nginx-basic-auth:latest
+    state: started
+    pull: yes
+    restart_policy: unless-stopped
+    ports:
+      - "8089:8089"
+    env:
+      "FORWARD_PORT": "5000"
+      "FORWARD_HOST": "{{ container_name }}"
+      "HTPASSWD": "{{ htpasswd }}"
+    links:
+      - "{{ container_name }}:{{ container_name }}"
+
+- name: Run command to change listen port
+  community.docker.docker_container_exec:
+    container: "{{ container_name }}-auth"
+    command: sed -i 's/listen 80/listen 8089/' auth.conf 
+    chdir: /opt
+
+- name: Restart {{ container_name }}-auth container
+  docker_container:
+    name: "{{ container_name }}-auth"
+    restart: yes
+
+- name: Check if prices.beancount exists
+  stat:
+    path: "{{ beancount_root }}/prices.beancount"
+  register: prices_file
+
+- name: Create cron job at 19:00 daily to fetch new beancount prices
+  ansible.builtin.cron:
+    name: "Fetch Beancount Prices"
+    user: "{{ username }}"
+    minute: "0"
+    hour: "19"
+    job: "docker exec fava bean-price /bean/master.beancount  >> {{ beancount_root }}/prices.beancount"
+  tags: cron
+  when: prices_file.stat.exists

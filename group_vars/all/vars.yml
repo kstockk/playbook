@@ -21,6 +21,8 @@ pointer_root: /mnt/pointer
 
 timemachine_root: /mnt/timemachine
 
+beancount_root: /mnt/pointer/Ledger
+
 #
 # Email credentials
 #
@@ -60,3 +62,5 @@ enable_timemachine: true
 enable_homeassistant: true
 
 enable_photoprism: true
+
+enable_beancount: true

@@ -1,7 +1,0 @@
-
----
-- hosts: servers
-  become: yes
-  roles:
-    - beancount
-  tags: beancount
