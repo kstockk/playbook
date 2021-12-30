@@ -3,4 +3,4 @@
   cron:
     name: "Update DuckDNS IP"
     minute: "*/5"
-    job: "echo url=\"https://www.duckdns.org/update?domains={{ duckdns_domain }}&token={{ duckdns_token }}&ip=&verbose=true\" | curl -k -o /home/pi/apps/duckdns/duck.log -K - > /dev/null 2>&1"
+    job: "echo url=\"https://www.duckdns.org/update?domains={{ duckdns_domain }}&token={{ duckdns_token }}&ip=&verbose=true\" | curl -k -o {{ docker_dir }}/duckdns/duck.log -K - > /dev/null 2>&1"
