@@ -70,18 +70,20 @@
     path: "{{ beancount_root }}/queries/{{ item }}"
   with_items:
     - query.sh
+    - update_budget.sh
     - is_monthly_bals
   tags: cron
   register: query_results
 
-- name: Create cron job at 06:00 daily to export is_monthly_bals query data
+- name: Create cron job at 06:00 daily to export is_monthly_bals query data and Update budget worksheet
   ansible.builtin.cron:
-    name: "Export is_monthly_bals query data"
+    name: "Export is_monthly_bals query data and Update budget worksheet"
     user: "{{ username }}"
     minute: "0"
     hour: "6"
-    job: "bash {{ beancount_root }}/queries/query.sh -q is_monthly_bals -s 2021-11-01"    
+    job: "bash {{ beancount_root }}/queries/query.sh -q is_monthly_bals -s 2021-11-01 && bash {{ beancount_root }}/queries/update_budget.sh"    
   tags: cron
   when: 
     - query_results.results[0].stat.exists
     - query_results.results[1].stat.exists
+    - query_results.results[2].stat.exists
