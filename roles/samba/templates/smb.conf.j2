@@ -81,6 +81,9 @@
    force create mask = 0644
    directory mask = 0755
    force directory mask = 0755
+{% if share.name == "timemachine" %}
+   fruit:time machine = yes
+{% endif %}
 
 {% endfor %}
 {% endif %}
