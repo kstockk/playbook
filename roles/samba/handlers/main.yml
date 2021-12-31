@@ -3,6 +3,6 @@
   service:
     name: "{{ item }}"
     state: restarted
-  with_items:
+  with_items: 
     - smbd
     - nmbd

@@ -17,3 +17,25 @@
     validate: 'testparm -s %s'
   notify:
     - Restart Samba services
+
+- name: Start Samba service(s)
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  with_items: 
+    - smbd
+    - nmbd
+
+- name: Configure Samba users
+  shell: >
+    set -o nounset -o pipefail -o errexit &&
+    (pdbedit --user={{ item.name }} 2>&1 > /dev/null) \
+    || (echo {{ item.password }}; echo {{ item.password }}) \
+    | smbpasswd -s -a {{ item.name }}
+  args:
+    executable: /bin/bash
+  with_items: "{{ samba_users }}"
+  register: smbpasswd
+  no_log: true
+  changed_when: "'Added user' in smbpasswd.stdout"
