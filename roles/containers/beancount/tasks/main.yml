@@ -13,9 +13,10 @@
     restart: yes
     restart_policy: unless-stopped
     env:
-     "BEANCOUNT_FILE": "/bean/master.beancount"
+     "BEANCOUNT_FILE": "/bean/data/master.beancount"
     volumes:
-      - "{{ beancount_root }}:/bean"
+      - "{{ beancount_data }}:/bean/data"
+      - "{{ docker_dir }}/{{ container_name }}/config:/bean/config"
 
 - name: Ensure that the {{ container_name }}-auth container does not exist
   docker_container:
@@ -51,7 +52,7 @@
 
 - name: Check if prices.beancount exists
   stat:
-    path: "{{ beancount_root }}/prices.beancount"
+    path: "{{ beancount_data }}/prices.beancount"
   tags: cron
   register: prices_file
 
@@ -61,13 +62,13 @@
     user: "{{ username }}"
     minute: "0"
     hour: "19"
-    job: "docker exec fava bean-price /bean/master.beancount  >> {{ beancount_root }}/prices.beancount"
+    job: "docker exec fava bean-price /bean/data/master.beancount  >> {{ beancount_data }}/prices.beancount"
   tags: cron
   when: prices_file.stat.exists
 
 - name: Check if queries directory and files exists
   stat:
-    path: "{{ beancount_root }}/queries/{{ item }}"
+    path: "{{ beancount_data }}/queries/{{ item }}"
   with_items:
     - query.sh
     - update_budget.sh
@@ -81,7 +82,7 @@
     user: "{{ username }}"
     minute: "0"
     hour: "6"
-    job: "bash {{ beancount_root }}/queries/query.sh -q is_monthly_bals -s 2021-11-01 && bash {{ beancount_root }}/queries/update_budget.sh"    
+    job: "bash {{ beancount_data }}/queries/query.sh -q is_monthly_bals -s 2021-11-01 && bash {{ beancount_data }}/queries/update_budget.sh"    
   tags: cron
   when: 
     - query_results.results[0].stat.exists

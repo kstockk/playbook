@@ -21,7 +21,7 @@ pointer_root: /mnt/pointer
 
 timemachine_root: /mnt/timemachine
 
-beancount_root: /mnt/pointer/Ledger
+beancount_data: /mnt/pointer/Ledger
 
 #
 # Email credentials
