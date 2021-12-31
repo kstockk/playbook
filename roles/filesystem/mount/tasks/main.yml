@@ -1,0 +1,19 @@
+- name: Mount the pointer drive
+  mount:
+    name: "{{ pointer_root }}"
+    src: "{{ pointer_drive }}"
+    path: /mnt/pointer
+    fstype: ext4
+    state: mounted
+    opts: defaults,auto,users,rw,nofail
+    passno: "2"
+
+- name: Mount the timemachine drive
+  mount:
+    name: "{{ timemachine_root }}"
+    src: "{{ timemachine_drive }}"
+    path: /mnt/pointer
+    fstype: ext4
+    state: mounted
+    opts: defaults,auto,users,rw,nofail
+    passno: "2"

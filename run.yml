@@ -4,6 +4,10 @@
   become: yes
   
   roles:
+    - role: filesystem/mount
+      tags:
+        - mount
+    
     - role: chriswayg.msmtp-mailer
       tags: 
         - msmtp
@@ -36,7 +40,6 @@
       tags: 
         - beancount
         - containers
-
 
     - role: timemachine
       when: enable_timemachine | default(False)

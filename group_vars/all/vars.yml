@@ -12,14 +12,26 @@ locale: en_AU.UTF-8
 timezone: "Australia/Melbourne"
 
 #
+# Pointer
+#
+
+pointer_root: /mnt/pointer
+
+pointer_drive: /dev/disk/by-label/pointer
+
+#
+# Time Machine
+#
+
+timemachine_root: /mnt/timemachine
+
+timemachine_drive: /dev/disk/by-label/timemachine
+
+#
 # Directories
 #
 
 docker_dir: /opt/docker/data
-
-pointer_root: /mnt/pointer
-
-timemachine_root: /mnt/timemachine
 
 beancount_data: /mnt/pointer/Ledger
 
