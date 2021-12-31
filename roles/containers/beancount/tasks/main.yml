@@ -4,6 +4,28 @@
     name: apache2-utils
     state: present
 
+- name: Check if {{ docker_dir }}/{{ container_name }}/config directory exists
+  stat:
+    path: "{{ docker_dir }}/{{ container_name }}/config"
+  register: config_dir
+
+- name: Create {{ docker_dir }}/{{ container_name }}/config directory if it doesn't already exist
+  file:
+    path: "{{ docker_dir }}/{{ container_name }}/config"
+    state: directory
+    owner: "{{ username }}"
+    mode: "0755"
+  when: not config_dir.stat.exists
+
+- name: Update custom ledger_importers
+  ansible.builtin.git:
+    repo: "https://github.com/kstockk/ledger_importers.git"
+    dest: "{{ docker_dir }}/{{ container_name }}/config/ledger_importers"
+    update: yes
+  tags: custom
+
+- meta: end_play
+
 - name: Ensure that the {{ container_name }} container is created and running
   docker_container:
     name: "{{ container_name }}"
@@ -13,7 +35,7 @@
     restart: yes
     restart_policy: unless-stopped
     env:
-     "BEANCOUNT_FILE": "/bean/data/master.beancount"
+      "BEANCOUNT_FILE": "/bean/data/master.beancount"
     volumes:
       - "{{ beancount_data }}:/bean/data"
       - "{{ docker_dir }}/{{ container_name }}/config:/bean/config"
