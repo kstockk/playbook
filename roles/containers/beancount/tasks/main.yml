@@ -24,8 +24,6 @@
     update: yes
   tags: custom
 
-- meta: end_play
-
 - name: Ensure that the {{ container_name }} container is created and running
   docker_container:
     name: "{{ container_name }}"
