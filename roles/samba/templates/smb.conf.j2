@@ -1,0 +1,86 @@
+#======================= Global Settings =======================
+
+#
+# This file is managed by Ansible
+#
+
+[global]
+
+## Browsing/Identification ###
+
+   workgroup = WORKGROUP
+
+#### Networking ####
+
+
+
+#### Debugging/Accounting ####
+
+   log file = /var/log/samba/log.%m
+   max log size = 1000
+   logging = file
+   panic action = /usr/share/samba/panic-action %d
+
+####### Authentication #######
+
+   server role = standalone server
+   obey pam restrictions = yes
+   unix password sync = yes
+   passwd program = /usr/bin/passwd %u
+   passwd chat = *Enter\snew\s*\spassword:* %n\n *Retype\snew\s*\spassword:* %n\n *password\supdated\ssuccessfully* .
+   pam password change = yes
+   map to guest = bad user
+   usershare allow guests = yes
+
+# Custom Configurations
+# Enable v1 authentication for Sonos 
+   ntlm auth = yes
+
+# Optimising for MacOS
+   fruit:aapl = yes
+   vfs objects = catia fruit streams_xattr
+   fruit:metadata = stream
+   fruit:model = AirPort
+   fruit:nfs_aces = yes
+   fruit:veto_appledouble = no
+   fruit:posix_rename = yes 
+   fruit:zero_file_id = yes
+   fruit:wipe_intentionally_left_blank_rfork = yes 
+   fruit:delete_empty_adfiles = yes
+   mangled names = no 
+
+#======================= Share Definitions =======================
+
+[homes]
+   comment = home directories
+   browseable = yes
+   read only = no
+   writeable = yes
+   valid users = %S
+   guest ok = no
+   hide unreadable = yes
+   access based share enum = Yes
+   create mode = 0664
+   force create mode = 0664
+   directory mode = 0775
+   force directory mode = 0775
+
+{% if samba_shares|length > 0 %}
+{% for share in samba_shares %}
+[{{ share.name }}]
+   comment = {{ share.name }}
+   path = {{ share.path }}
+   browseable = yes
+   read only = no
+   writeable = yes
+   valid users = {{ share.valid_users }}
+   guest ok = no
+   hide unreadable = yes
+   access based share enum = Yes
+   create mask = 0644
+   force create mask = 0644
+   directory mask = 0755
+   force directory mask = 0755
+
+{% endfor %}
+{% endif %}

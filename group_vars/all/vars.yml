@@ -62,6 +62,23 @@ msmtp_default_account: "gmail"
 msmtp_alias_default : "{{ email }}"
 
 #
+# Samba
+#
+enable_samba: true
+
+samba_users:
+  - name: "{{ username }}"
+    password: "{{ samba_passwd }}"
+
+samba_shares:
+  - name: pointer
+    path: "{{ pointer_root }}"
+    valid_users: "{{ username }}"
+  - name: timemachine
+    path: "{{ timemachine_root }}"
+    valid_users: "{{ username }}"
+
+#
 # Services
 #
 

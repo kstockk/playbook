@@ -1,0 +1,19 @@
+---
+- name: Install Samba
+  apt:
+    name: '{{ packages }}'
+    state: present
+  vars:
+    packages:
+      - samba
+      - samba-common-bin
+      - smbclient
+      - cifs-utils
+
+- name: Samba configuration
+  template:
+    src: smb.conf.j2
+    dest: "/etc/samba/smb.conf"
+    validate: 'testparm -s %s'
+  notify:
+    - Restart Samba services

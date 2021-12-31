@@ -1,4 +1,3 @@
-
 ---
 - hosts: khazpie
   become: yes
@@ -11,6 +10,11 @@
     - role: chriswayg.msmtp-mailer
       tags: 
         - msmtp
+
+    - role: samba
+      when: enable_samba | default(False)
+      tags: 
+        - samba
 
     - role: duckdns
       when: enable_duckdns | default(False)
