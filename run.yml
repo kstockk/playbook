@@ -48,7 +48,7 @@
     - role: stefangweichinger.ansible_rclone
       when: enable_timemachine | default(False)
       tags:
-        - timemachine
+        - rclone
 
     - role: filesystem/timemachine
       when: enable_timemachine | default(False)

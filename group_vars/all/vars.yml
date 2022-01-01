@@ -33,11 +33,24 @@ timemachine_backups:
     minute: "5"
     src: "{{ pointer_root }}"
     dest: "{{ timemachine_root }}/pointer"
-  - name: "Home Directories"
+  - name: "Hourly Backup: Home Directories"
     hour: "*/1"
     minute: "35"
     src: "/home"
     dest: "{{ timemachine_root }}/home_backups"
+
+#
+# Rclone
+#
+
+rclone_arch: "arm-v7"
+
+rclone_backups:
+  - name: "Backup {{ pointer_root }} to Onedrive"
+    hour: "1"
+    minute: "5"
+    src: "{{ pointer_root }}"
+    dest: "encrypted:"
 
 #
 # Directories

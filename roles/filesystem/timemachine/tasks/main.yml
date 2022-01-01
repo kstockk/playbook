@@ -36,9 +36,10 @@
     name: "{{ item.name }}"
     hour: "{{ item.hour }}"
     minute: "{{ item.minute }}"
-    job: '{{ scripts_dir }}/tm_bkup/tm_bkup.sh "{{ item.src }}" "{{ item.dest }}" > /dev/null 2>&1'
+    job: 'sudo {{ scripts_dir }}/tm_bkup/tm_bkup.sh "{{ item.src }}" "{{ item.dest }}" > /dev/null 2>&1'
   with_items:
     - "{{ timemachine_backups }}"
+  become: no
   tags: cron
 
 - name: Backup {{ docker_dir }} data (3am Every Monday)
@@ -47,7 +48,8 @@
     weekday: "1"
     hour: "3"
     minute: "0"
-    job: "docker stop $(docker ps -q) && rsync -avz --delete {{ docker_dir }}/ {{ timemachine_root }}/docker_data/ && docker start $(docker ps -a -q)"
+    job: "sudo docker stop $(docker ps -q) && rsync -avz --delete {{ docker_dir }}/ {{ timemachine_root }}/docker_data/ && docker start $(docker ps -a -q)"
+  become: no
   tags: cron
 
 - name: Create rclone_bkup directory
@@ -71,12 +73,13 @@
     mode: "755"
   tags: rclone
 
-# - name: Create rclone backups
-#   cron:
-#     name: "{{ item.name }}"
-#     hour: "{{ item.hour }}"
-#     minute: "{{ item.minute }}"
-#     job: '{{ scripts_dir }}/rclone_bkup/rclone_bkup.sh "{{ item.src }}" "{{ item.dest }}" > /dev/null 2>&1'
-#   with_items:
-#     - "{{ rclone_backups }}"
-#   tags: rclone
+- name: Create rclone backups
+  cron:
+    name: "{{ item.name }}"
+    hour: "{{ item.hour }}"
+    minute: "{{ item.minute }}"
+    job: 'sudo {{ scripts_dir }}/rclone_bkup/rclone_bkup.sh "{{ item.src }}" "{{ item.dest }}" > /dev/null 2>&1'
+  with_items:
+    - "{{ rclone_backups }}"
+  become: no
+  tags: rclone
