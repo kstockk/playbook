@@ -3,6 +3,10 @@
   become: yes
   
   roles:
+    - role: defaults
+      tags:
+        - defaults
+
     - role: filesystem/mount
       tags:
         - mount
