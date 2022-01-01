@@ -1,0 +1,82 @@
+---
+- name: Git clone laurent22/rsync-time-backup
+  ansible.builtin.git:
+    repo: "https://github.com/laurent22/rsync-time-backup.git"
+    dest: "{{ scripts_dir }}/rsync-time-backup"
+  tags: git
+
+- name: Create tm_bkup directory
+  file:
+    path: "{{ scripts_dir }}/tm_bkup"
+    state: directory
+    mode: "755"
+
+- name: Set up tm_bkup.sh script
+  template:
+    src: tm_bkup.sh.j2
+    dest: "{{ scripts_dir }}/tm_bkup/tm_bkup.sh"
+    mode: "755"
+    force: yes
+
+- name: Copy exclude_file.txt to tm_bkup directory
+  copy:
+    src: exclude_file.txt
+    dest: "{{ scripts_dir }}/tm_bkup/exclude_file.txt"
+    mode: "755"
+
+- name: Create backup.marker
+  file:
+    path: "{{ item.dest }}/backup.marker"
+    state: file
+  with_items:
+    - "{{ timemachine_backups }}"   
+
+- name: Create timemachine backups
+  cron:
+    name: "{{ item.name }}"
+    hour: "{{ item.hour }}"
+    minute: "{{ item.minute }}"
+    job: '{{ scripts_dir }}/tm_bkup/tm_bkup.sh "{{ item.src }}" "{{ item.dest }}" > /dev/null 2>&1'
+  with_items:
+    - "{{ timemachine_backups }}"
+  tags: cron
+
+- name: Backup {{ docker_dir }} data (3am Every Monday)
+  cron:
+    name: "Backup {{ docker_dir }} data (3am Every Monday)"
+    weekday: "1"
+    hour: "3"
+    minute: "0"
+    job: "docker stop $(docker ps -q) && rsync -avz --delete {{ docker_dir }}/ {{ timemachine_root }}/docker_data/ && docker start $(docker ps -a -q)"
+  tags: cron
+
+- name: Create rclone_bkup directory
+  file:
+    path: "{{ scripts_dir }}/rclone_bkup"
+    state: directory
+    mode: "755"
+  tags: rclone
+
+- name: Copy rclone_bkup.sh to rclone_bkup directory
+  copy:
+    src: rclone_bkup.sh
+    dest: "{{ scripts_dir }}/rclone_bkup/rclone_bkup.sh"
+    mode: "755"
+  tags: rclone
+
+- name: Copy exclude-file.txt to rclone_bkup directory
+  copy:
+    src: exclude-file.txt
+    dest: "{{ scripts_dir }}/rclone_bkup/exclude-file.txt"
+    mode: "755"
+  tags: rclone
+
+# - name: Create rclone backups
+#   cron:
+#     name: "{{ item.name }}"
+#     hour: "{{ item.hour }}"
+#     minute: "{{ item.minute }}"
+#     job: '{{ scripts_dir }}/rclone_bkup/rclone_bkup.sh "{{ item.src }}" "{{ item.dest }}" > /dev/null 2>&1'
+#   with_items:
+#     - "{{ rclone_backups }}"
+#   tags: rclone

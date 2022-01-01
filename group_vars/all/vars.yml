@@ -27,11 +27,25 @@ timemachine_root: /mnt/timemachine
 
 timemachine_drive: /dev/disk/by-label/timemachine
 
+timemachine_backups:
+  - name: "Hourly Backup: {{ pointer_root }}"
+    hour: "*/1"
+    minute: "5"
+    src: "{{ pointer_root }}"
+    dest: "{{ timemachine_root }}/pointer"
+  - name: "Home Directories"
+    hour: "*/1"
+    minute: "35"
+    src: "/home"
+    dest: "{{ timemachine_root }}/home_backups"
+
 #
 # Directories
 #
 
 docker_dir: /opt/docker/data
+
+scripts_dir: /opt/scripts
 
 beancount_data: /mnt/pointer/Ledger
 
