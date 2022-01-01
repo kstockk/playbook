@@ -38,7 +38,7 @@
   when: grep_output.stdout != "false"
 
 - name: Change swap size to 4gb
-  shell: sed -i 's/CONF_SWAPSIZE=100/CONF_SWAPSIZE=4096/g'
+  shell: sed -i 's/CONF_SWAPSIZE=100/CONF_SWAPSIZE=4096/g' /etc/dphys-swapfile
   when: grep_output.stdout != "false"
 
 - name: Initialise Swap File
@@ -49,6 +49,20 @@
   shell: dphys-swapfile swapon
   when: grep_output.stdout != "false"
 
-# add arm_64bit=1 under pi /boot/config.txt
+- name: Check /boot/config.txt
+  shell: grep -E "arm_64bit=1" /boot/config.txt || echo false
+  register: grep_output
 
-# reboot
+- name: Add arm_64bit=1 to /boot/config.txt under [pi4]
+  shell: sed -i 's/\[pi4\]/\[pi4\]\narm_64bit=1/g' /boot/config.txt
+  when: grep_output.stdout != "false"
+
+- name: Check if reboot required
+  stat:
+    path: /var/run/reboot-required
+  register: reboot_required_file
+
+- name: Reboot if required
+  reboot:
+    msg: Rebooting due to a kernel update
+  when: reboot_required_file.stat.exists == true
