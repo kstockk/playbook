@@ -125,4 +125,6 @@ enable_photoprism: true
 
 enable_beancount: true
 
+enable_beets: true
+
 enable_garminexport: true

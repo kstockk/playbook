@@ -30,11 +30,13 @@
       when: enable_unifi | default(False)
       tags: 
       - unifi
+      - containers
 
     - role: containers/adguard
       when: enable_adguard | default(False)
       tags: 
       - adguard
+      - containers
 
     - role: containers/homeassistant
       when: enable_homeassistant | default(False)
@@ -52,6 +54,12 @@
       when: enable_beancount | default(False)
       tags: 
         - beancount
+        - containers
+
+    - role: containers/beets
+      when: enable_beets | default(False)
+      tags: 
+        - beets
         - containers
 
     - role: garminexport
