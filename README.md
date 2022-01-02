@@ -1,7 +1,8 @@
 # playbook
 
 This Anisble Playbook is heavily adopted from [notthebee/infra](https://github.com/notthebee/infra).
-Ansible playbook for my Raspberry Pi 4
+
+Ansible playbook for my Raspberry Pi 4.
 
 ## Preconfig
 
