@@ -116,8 +116,8 @@
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
-    links:
-      - cadvisor:cadvisor
-      - node-exporter:node-exporter
     networks:
     - name: "{{ container_name }}"
+      links:
+      - monitoring-cadvisor:cadvisor
+      - monitoring-node-exporter:node-exporter
