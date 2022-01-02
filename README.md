@@ -1,18 +1,6 @@
-# ansible-rasp
+# playbook
 
 This Anisble Playbook is heavily adopted from [notthebee/infra](https://github.com/notthebee/infra)
-
-## Boot Drive Setup
-
-Create a bootable SSD using the latest version of Raspbery Pi Imager (Raspberry Pi OS Lite (32-bit).
-Ensure the following customisation options are configured using the Advanced Menu (Ctrl+Shift+X)
-
-- Disable overscan
-- Set the hostname
-- Enable SSH
-- Set new password for the 'pi' user
-- Set the locale settings
-- Disable telemetry
 
 ## Usage
 
