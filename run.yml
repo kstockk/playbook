@@ -49,6 +49,12 @@
         - beancount
         - containers
 
+    - role: garminexport
+      when: enable_garminexport | default(False)
+      become: no
+      tags:
+        - garminexport
+
     - role: stefangweichinger.ansible_rclone
       when: enable_timemachine | default(False)
       tags:

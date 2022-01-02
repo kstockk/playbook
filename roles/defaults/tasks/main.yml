@@ -66,3 +66,25 @@
   reboot:
     msg: Rebooting due to a kernel update
   when: reboot_required_file.stat.exists == true
+
+- name: Check if {{ item }} directory exists
+  stat:
+    path: "{{ item }}"
+  with_items:
+    - "{{ docker_dir }}"
+    - "{{ scripts_dir }}"
+  register: config_dir
+  tags: dir
+
+- name: Create {{ item }} directory if it doesn't already exist
+  file:
+    path: "{{ item.item }}"
+    state: directory
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: "0755"
+  with_items:
+    - "{{ config_dir.results }}"
+  when:
+    - not item.stat.exists
+  tags: dir

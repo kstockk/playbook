@@ -1,0 +1,52 @@
+---
+- name: Create garminexport directory
+  file:
+    path: "{{ scripts_dir }}/garminexport"
+    state: directory
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: "755"
+
+- name: Check if {{ scripts_dir }}/garminexport/venv directory exists
+  stat:
+    path: "{{ scripts_dir }}/garminexport/venv"
+  register: venv
+
+- name: Create python virtual environment
+  shell: "python3 -m venv {{ scripts_dir }}/garminexport/venv"
+  when: not venv.stat.exists
+
+- name: Install garminexport requirements
+  pip:
+    name: 
+      - certifi==2021.10.8
+      - charset-normalizer==2.0.9
+      - garminexport==0.4.0
+      - idna==3.3
+      - python-dateutil==2.8.2
+      - requests==2.26.0
+      - six==1.16.0
+      - urllib3==1.26.7
+    virtualenv: /{{ scripts_dir }}/garminexport/venv
+
+- name: Copy bash script
+  template:
+    src: garminexport.sh.j2
+    dest: "{{ scripts_dir }}/garminexport/garminexport.sh"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: "755"
+
+- name: Create .env file
+  shell: echo "USER={{ garmin_user }}\nPASSWORD={{ garmin_password }}" > {{ scripts_dir }}/garminexport/.env
+  no_log: true
+
+- name: Create cron job at 19:00 weekly to backup new Garmin Activites
+  ansible.builtin.cron:
+    name: "Backup new Garmin Activites"
+    user: "{{ username }}"
+    weekday: "1"
+    minute: "0"
+    hour: "4"
+    job: "{{ scripts_dir }}/garminexport/garminexport.sh"    
+  tags: cron

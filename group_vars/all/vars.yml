@@ -60,7 +60,9 @@ docker_dir: /opt/docker/data
 
 scripts_dir: /opt/scripts
 
-beancount_data: /mnt/pointer/Ledger
+beancount_data: "{{ pointer_root }}/Ledger"
+
+garminexport_data: "{{ pointer_root }}/Other/Activities"
 
 #
 # Email credentials
@@ -120,3 +122,5 @@ enable_homeassistant: true
 enable_photoprism: true
 
 enable_beancount: true
+
+enable_garminexport: true
