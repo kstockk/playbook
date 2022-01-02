@@ -117,6 +117,8 @@ enable_adguard: true
 
 enable_timemachine: true
 
+enable_unifi: true
+
 enable_homeassistant: true
 
 enable_photoprism: true

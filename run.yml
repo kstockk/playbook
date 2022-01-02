@@ -26,6 +26,11 @@
       - duckdns
       - cron
 
+    - role: containers/unifi
+      when: enable_unifi | default(False)
+      tags: 
+      - unifi
+
     - role: containers/adguard
       when: enable_adguard | default(False)
       tags: 
