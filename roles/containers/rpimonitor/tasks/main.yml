@@ -1,0 +1,115 @@
+---
+- name: Ensure that the {{ container_name }} network is created and running
+  docker_network:
+    name: "{{ container_name }}"
+
+- name: Check if {{ docker_dir }}/{{ container_name }} directory exists
+  stat:
+    path: "{{ docker_dir }}/{{ container_name }}/{{ item }}"
+  with_items:
+    - grafana
+    - prometheus
+  register: results
+
+- name: Create the required directories if it doesn't already exist
+  copy:
+    src: "{{ item.item }}"
+    dest: "{{ docker_dir }}/{{ container_name }}"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: "0755"
+  with_items:
+    - "{{ results.results }}"
+  when:
+    - not item.stat.exists
+
+- name: Ensure that the monitoring-cadvisor container is created and running
+  docker_container:
+    name: "monitoring-cadvisor"
+    image: "zcube/cadvisor:latest"
+    hostname: rpi-cadvisor
+    ipc_mode: shareable
+    privileged: true
+    pull: yes
+    restart: true
+    state: 'started'
+    exposed_ports:
+      - 8080
+    volumes:
+      - "/:/rootfs:ro"
+      - "/var/run:/var/run:ro"
+      - "/sys:/sys:ro"
+      - "/var/lib/docker/:/var/lib/docker:ro"
+      - "/dev/disk/:/dev/disk:ro"
+    restart_policy: unless-stopped
+    security_opts:
+      - label=disable
+    devices:
+      - "/dev/kmsg:/dev/kmsg"
+    networks:
+      - name: "{{ container_name }}"
+
+- name: Ensure that the monitoring-grafana container is created and running
+  docker_container:
+    name: "monitoring-grafana"
+    image: "grafana/grafana:main"
+    hostname: rpi-grafana
+    pull: yes
+    restart: true
+    state: 'started'
+    user: "{{ uid }}"
+    ports:
+      - "3030:3000"
+    env:
+      "GF_USERS_ALLOW_SIGN_UP": "false"
+      "GF_PATHS_CONFIG": "/etc/grafana/grafana.ini"
+      "GF_PATHS_DATA": "/var/lib/grafana"
+      "GF_PATHS_HOME": "/usr/share/grafana"
+      "GF_PATHS_LOGS": "/var/log/grafana"
+      "GF_PATHS_PLUGINS": "/var/lib/grafana/plugins"
+      "GF_PATHS_PROVISIONING": "/etc/grafana/provisioning"
+    volumes:
+      - "{{ docker_dir }}/{{ container_name }}/grafana/data:/var/lib/grafana"
+      - "{{ docker_dir }}/{{ container_name }}/grafana/grafana.ini:/etc/grafana/grafana.ini"
+      - "{{ docker_dir }}/{{ container_name }}/grafana/provisioning:/etc/grafana/provisioning"
+    restart_policy: unless-stopped
+    networks:
+      - name: "{{ container_name }}"
+
+- name: Ensure that the monitoring-node-exporter container is created and running
+  docker_container:
+    name: "monitoring-node-exporter"
+    image: "prom/node-exporter:latest"
+    hostname: rpi-exporter
+    pull: yes
+    restart: true
+    state: 'started'
+    exposed_ports:
+      - 9100
+    restart_policy: unless-stopped
+    networks:
+    - name: "{{ container_name }}"
+
+- name: Ensure that the monitoring-prometheus container is created and running
+  docker_container:
+    name: "monitoring-prometheus"
+    image: "prom/prometheus:latest"
+    hostname: rpi-prom
+    user: "{{ uid }}"
+    pull: yes
+    restart: true
+    state: 'started'
+    exposed_ports:
+      - 9090
+    restart_policy: unless-stopped
+    volumes:
+      - "{{ docker_dir }}/{{ container_name }}/prometheus/data:/prometheus"
+      - "{{ docker_dir }}/{{ container_name }}/prometheus/config:/etc/prometheus/"
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    links:
+      - cadvisor:cadvisor
+      - node-exporter:node-exporter
+    networks:
+    - name: "{{ container_name }}"

@@ -80,6 +80,12 @@
         - beets
         - containers
 
+    - role: containers/rpimonitor
+      when: enable_rpimonitor | default(False)
+      tags: 
+        - rpimonitor
+        - containers
+
     - role: garminexport
       when: enable_garminexport | default(False)
       become: no
