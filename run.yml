@@ -32,6 +32,12 @@
       - homer
       - containers
 
+    - role: containers/resilio
+      when: enable_resilio | default(False)
+      tags: 
+      - resilio
+      - containers
+
     - role: containers/unifi
       when: enable_unifi | default(False)
       tags: 

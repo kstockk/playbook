@@ -2,13 +2,13 @@
 - name: Ensure that the {{ container_name }} container is created and running
   docker_container:
     name: "{{ container_name }}"
-    image:  b4bz/homer:latest
+    image: b4bz/homer:latest
     state: started
     pull: yes
     restart: yes
     restart_policy: unless-stopped
     env:
-      "UID": "false"
+      "UID": "{{ uid }}"
       "GID": "{{ uid }}"
     ports:
       - "8282:8080"

@@ -2,18 +2,19 @@
 - name: Ensure that the {{ container_name }} container is created and running
   docker_container:
     name: "{{ container_name }}"
-    image: ghcr.io/linuxserver/beets
+    image: ghcr.io/linuxserver/resilio-sync
     state: started
     pull: yes
     restart: yes
     restart_policy: unless-stopped
-    ports:
-      - "8337:8337"
     env:
       "TZ": "{{ timezone }}"
       "PUID": "{{ uid }}"
       "PGID": "{{ uid }}"
+    ports:
+      - "8888:8888"
+      - "55555:55555"
     volumes:
       - "{{ docker_dir }}/{{ container_name }}:/config"
-      - "{{ pointer_root }}/Music:/music"
       - "{{ pointer_root }}/Downloads:/downloads"
+      - "{{ pointer_root }}:/sync"
