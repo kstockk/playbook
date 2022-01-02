@@ -11,6 +11,14 @@
     - prometheus
   register: results
 
+- name: Check /boot/cmdline.txt
+  shell: grep -E "systemd.unified_cgroup_hierarchy=0 cgroup_enable=memory cgroup_memory=1" /boot/cmdline.txt || echo false
+  register: grep_output
+
+- name: Edit /boot/cmdline.txt
+  shell: echo "$(cat /boot/cmdline.txt) systemd.unified_cgroup_hierarchy=0 cgroup_enable=memory cgroup_memory=1" > /boot/cmdline.txt
+  when: grep_output.stdout == "false"
+
 - name: Create the required directories if it doesn't already exist
   copy:
     src: "{{ item.item }}"
@@ -45,7 +53,7 @@
     security_opts:
       - label=disable
     devices:
-      - "/dev/kmsg:/dev/kmsg"
+      - "/dev/kmsg"
     networks:
       - name: "{{ container_name }}"
 
