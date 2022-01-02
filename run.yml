@@ -3,9 +3,9 @@
   become: yes
   
   roles:
-    - role: defaults
+    - role: essentials
       tags:
-        - defaults
+        - essentials
 
     - role: filesystem/mount
       tags:

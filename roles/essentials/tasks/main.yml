@@ -88,3 +88,19 @@
   when:
     - not item.stat.exists
   tags: dir
+
+- name: Configure cron PATH
+  cron:
+    name: PATH
+    user: "{{ username }}"
+    env: yes
+    job: "/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin"
+  tags: cron
+
+- name: Enable cron e-mail notifications
+  cron:
+    name: MAILTO
+    user: "{{ username }}"
+    env: yes
+    job: "{{ cron_email }}"
+  tags: cron
