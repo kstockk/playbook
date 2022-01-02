@@ -38,6 +38,12 @@
       - adguard
       - containers
 
+    - role: containers/portainer
+      when: enable_portainer | default(False)
+      tags: 
+      - portainer
+      - containers
+
     - role: containers/homeassistant
       when: enable_homeassistant | default(False)
       tags: 

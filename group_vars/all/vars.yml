@@ -119,6 +119,8 @@ enable_timemachine: true
 
 enable_unifi: true
 
+enable_portainer: true
+
 enable_homeassistant: true
 
 enable_photoprism: true
