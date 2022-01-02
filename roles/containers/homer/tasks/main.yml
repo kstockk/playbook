@@ -1,0 +1,16 @@
+---
+- name: Ensure that the {{ container_name }} container is created and running
+  docker_container:
+    name: "{{ container_name }}"
+    image:  b4bz/homer:latest
+    state: started
+    pull: yes
+    restart: yes
+    restart_policy: unless-stopped
+    env:
+      "UID": "false"
+      "GID": "{{ uid }}"
+    ports:
+      - "8282:8080"
+    volumes:
+      - "{{ docker_dir }}/{{ container_name }}:/www/assets"

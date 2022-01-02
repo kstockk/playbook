@@ -115,6 +115,8 @@ enable_duckdns: true
 
 enable_adguard: true
 
+enable_homer: true
+
 enable_timemachine: true
 
 enable_unifi: true
