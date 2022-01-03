@@ -8,6 +8,18 @@
   shell:
     cmd: apt update && apt upgrade -y
 
+- name: Generate the locale (Debian and Ubuntu)
+  when: ansible_os_family == 'Debian'
+  locale_gen:
+    name: "{{ locale }}"
+    state: present
+  tags: lang
+
+- name: Set the locale
+  when: ansible_os_family == 'Debian'
+  command: "localectl set-locale LANG={{ locale }}"
+  tags: lang
+
 - name: Installing packages
   apt:
     name: '{{ item }}'

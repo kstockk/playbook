@@ -1,4 +1,4 @@
-# playbook
+# kstockk/playbook
 
 This Anisble Playbook is heavily adopted from [notthebee/infra](https://github.com/notthebee/infra).
 
