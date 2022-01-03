@@ -48,7 +48,7 @@
     weekday: "1"
     hour: "3"
     minute: "0"
-    job: "docker stop $(docker ps -q) && sudo rsync -avz --delete {{ docker_dir }}/ {{ timemachine_root }}/docker_data/ && docker start $(docker ps -a -q)"
+    job: "docker stop $(docker ps -q) ; sudo rsync -avz --delete {{ docker_dir }}/ {{ timemachine_root }}/docker_data/ ; docker start $(docker ps -a -q)"
   become: no
   tags: cron
 
