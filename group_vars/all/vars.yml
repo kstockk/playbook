@@ -129,6 +129,8 @@ enable_homeassistant: true
 
 enable_photoprism: true
 
+enable_airsonic: true
+
 enable_beancount: true
 
 enable_beets: true

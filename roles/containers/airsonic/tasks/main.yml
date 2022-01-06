@@ -1,0 +1,35 @@
+---
+- name: Check if {{ docker_dir }}/{{ container_name }} directory exists
+  stat:
+    path: "{{ docker_dir }}/{{ container_name }}"
+  register: config_dir
+
+- name: Create {{ docker_dir }}/{{ container_name }} directory if it doesn't already exist
+  file:
+    path: "{{ docker_dir }}/{{ container_name }}"
+    state: directory
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: "0755"
+  when: not config_dir.stat.exists
+
+- name: Ensure that the {{ container_name }} container is up-to-date and running
+  docker_container:
+    name: "{{ container_name }}"
+    image: airsonicadvanced/airsonic-advanced:latest
+    state: started
+    pull: yes
+    restart: yes
+    restart_policy: unless-stopped
+    ports:
+      - "4040:4040"
+      - "4041:4041"
+    env:
+      PUID={{ uid }}
+      PGID={{ uid }}
+      TZ={{ timezone }}
+    volumes:
+      - "{{ docker_dir }}/{{ container_name }}:/var/airsonic"
+      - "{{ pointer_root }}/Music:/var/music"
+      - "{{ pointer_root }}/Podcasts:/var/podcasts"
+      - "{{ pointer_root }}/Playlists:/var/playlists"

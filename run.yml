@@ -68,6 +68,12 @@
         - photoprism
         - containers
 
+    - role: containers/airsonic
+      when: enable_airsonic | default(False)
+      tags: 
+        - airsonic
+        - containers
+
     - role: containers/beancount
       when: enable_beancount | default(False)
       tags: 
