@@ -4,10 +4,27 @@
     path: "{{ docker_dir }}/{{ container_name }}"
   register: config_dir
 
-- name: Create {{ docker_dir }}/{{ container_name }} directory if it doesn't already exist
+- name: Initial deployment of container
+  docker_container:
+    name: "{{ container_name }}"
+    image: airsonicadvanced/airsonic-advanced:latest
+    state: started
+    pull: yes
+    restart_policy: unless-stopped
+    ports:
+      - "4040:4040"
+      - "4041:4041"
+    env:
+      TZ={{ timezone }}
+    volumes:
+      - "{{ docker_dir }}/{{ container_name }}:/var/airsonic"
+  when: not config_dir.stat.exists
+
+- name: Ensure that the {{ docker_dir }}/{{ container_name }} directory has the right permissions
   file:
     path: "{{ docker_dir }}/{{ container_name }}"
     state: directory
+    recurse: yes
     owner: "{{ username }}"
     group: "{{ username }}"
     mode: "0755"
