@@ -34,8 +34,13 @@
    usershare allow guests = yes
 
 # Custom Configurations
+   client min protocol = {{ samba_configs.min_samba }}
+   client max protocol = {{ samba_configs.max_samba }}
+{% if samba_configs.enable_ntlm == "true" %}
+
 # Enable v1 authentication for Sonos 
    ntlm auth = yes
+{% endif %}
 
 # Optimising for MacOS
    fruit:aapl = yes
@@ -62,9 +67,7 @@
    hide unreadable = yes
    access based share enum = Yes
    create mode = 0664
-   force create mode = 0664
    directory mode = 0775
-   force directory mode = 0775
 
 {% if samba_shares|length > 0 %}
 {% for share in samba_shares %}
@@ -79,9 +82,7 @@
    hide unreadable = yes
    access based share enum = Yes
    create mask = 0644
-   force create mask = 0644
    directory mask = 0755
-   force directory mask = 0755
 {% if share.name == "timemachine" %}
    fruit:time machine = yes
 {% endif %}

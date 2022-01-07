@@ -1,0 +1,5 @@
+---
+samba_configs:
+  enable_ntlm: false
+  min_samba: SMB3
+  max_samba: SMB3
