@@ -26,6 +26,12 @@
       - duckdns
       - cron
 
+    - role: containers/nginx
+      when: enable_nginx | default(False)
+      tags: 
+      - nginx
+      - containers
+
     - role: containers/homer
       when: enable_homer | default(False)
       tags: 

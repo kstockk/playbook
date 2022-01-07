@@ -1,0 +1,78 @@
+---
+- name: Check if {{ docker_dir }}/{{ container_name }} directory exists
+  stat:
+    path: "{{ docker_dir }}/{{ container_name }}/config.json"
+  register: docker_data
+
+- name: Create requiries directories and files
+  block:
+  - name: Create {{ docker_dir }}/{{ container_name }} directory
+    file:
+      path: "{{ docker_dir }}/{{ container_name }}/{{ item }}"
+      state: directory
+      owner: "{{ username }}"
+      group: "{{ username }}"
+      mode: "0755"
+    with_items:
+      - "data"
+      - "letsencrypt"
+  - name: Create ngnix config.json
+    file:
+      path: "{{ docker_dir }}/{{ container_name }}/config.json"
+      state: touch
+      owner: "{{ username }}"
+      group: "{{ username }}"
+      mode: "0644"
+  when: not docker_data.stat.exists
+
+- name: Ensure that the {{ container_name }} network is created and running
+  docker_network:
+    name: "{{ container_name }}"
+
+- name: Ensure that the {{ container_name }} MariaDB container is created and running
+  docker_container:
+    name: "nginx-mariadb"
+    image: "arm64v8/mariadb:10.5"
+    pull: yes
+    command: "mysqld --transaction-isolation=READ-COMMITTED --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --max-connections=512 --innodb-rollback-on-timeout=OFF --innodb-lock-wait-timeout=50"
+    state: 'started'
+    env:
+      "MYSQL_ROOT_PASSWORD": "npm"
+      "MYSQL_DATABASE": "npm"
+      "MYSQL_USER": "npm"
+      "MYSQL_PASSWORD": "npm"
+    volumes:
+      - "{{ docker_dir }}/{{ container_name }}/mysql:/var/lib/mysql"
+    restart_policy: unless-stopped
+    security_opts:
+      - seccomp:unconfined
+      - apparmor:unconfined
+    networks:
+      - name: "{{ container_name }}"
+
+- name: Ensure that the {{ container_name }} container is created and running
+  docker_container:
+    name: "{{ container_name }}"
+    image: jc21/nginx-proxy-manager:latest
+    pull: yes
+    ports: 
+      - "80:80"
+      - "443:443"
+      - "81:81"
+    state: 'started'
+    env:
+      "DB_MYSQL_HOST": "nginx-mariadb"
+      "DB_MYSQL_PORT": "3306"
+      "DB_MYSQL_USER": "npm"
+      "DB_MYSQL_PASSWORD": "npm"
+      "DB_MYSQL_NAME": "npm"
+      "DISABLE_IPV6": 'true'
+    volumes:
+      - "{{ docker_dir }}/{{ container_name }}/data:/data"
+      - "{{ docker_dir }}/{{ container_name }}/config.json:/app/config/production.json"
+      - "{{ docker_dir }}/{{ container_name }}/letsencrypt:/letsencrypt"
+    restart_policy: unless-stopped
+    networks:
+      - name: "{{ container_name }}"
+    links:
+      - "nginx-mariadb"
