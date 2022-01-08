@@ -1,6 +1,6 @@
 ---
 container_name: adguard
-dashboard_name: "Adguard"
+dashboard_name: "Adguard Home"
 dashboard_category: "Management"
-dashboard_subtitle: "Network-wide software for blocking ads & tracking"
+dashboard_subtitle: "Network DNS Server"
 dashboard_url: "http://{{ ansible_default_ipv4.address }}"

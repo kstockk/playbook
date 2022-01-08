@@ -2,5 +2,5 @@
 container_name: rpimonitor
 dashboard_name: "Grafana [rpimonitor]"
 dashboard_category: "Management"
-dashboard_subtitle: "Dashboard anything. Observe everything."
+dashboard_subtitle: "Everything Dashboards"
 dashboard_url: "http://{{ ansible_default_ipv4.address }}:3030/d/Ss3q6hSZk/docker-and-os-metrics-for-raspberry-pi?orgId=1&refresh=30s"
