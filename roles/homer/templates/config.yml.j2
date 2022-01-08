@@ -3,6 +3,8 @@ title: "{{ homer_title }}"
 subtitle: "{{ homer_subtitle }}"
 logo: "/assets/tools/icons/logo.png"
 
+stylesheet: "/assets/custom.css"
+
 header: true
 footer: false
 columns: 3
@@ -62,7 +64,7 @@ services:
       endpoint: "http://{{ ansible_default_ipv4.address }}:7000/{{ item.url }}"
 {% endif %}
 {% endif %}
-      target: "_blank"
+#      target: "_blank"
 
 
 {% endfor %}

@@ -39,6 +39,18 @@
     group: "{{ username }}"
     mode: "0644"
 
+- name: Copy custom configuration to {{ docker_dir }}/{{ container_name }}
+  copy:
+    src: "{{ item }}"
+    dest: "{{ docker_dir }}/{{ container_name }}/{{ item }}"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: "0644"
+    force: true
+  with_items:
+    - "custom.css"
+    - "manifest.json"
+
 - name: Homer dashboard configuration
   template:
     src: config.yml.j2

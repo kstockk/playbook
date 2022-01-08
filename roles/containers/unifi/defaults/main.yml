@@ -3,5 +3,5 @@ container_name: unifi
 dashboard_name: "Unifi Controller"
 dashboard_category: "Management"
 dashboard_subtitle: "Manage your Unifi network"
-dashboard_url: "http://{{ ansible_default_ipv4.address }}:8443/manage/default/dashboard"
+dashboard_url: "https://{{ ansible_default_ipv4.address }}:8443/manage/default/dashboard"
 dashboard_type: false
