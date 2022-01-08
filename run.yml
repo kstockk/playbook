@@ -32,12 +32,6 @@
       - nginx
       - containers
 
-    - role: containers/homer
-      when: enable_homer | default(False)
-      tags: 
-      - homer
-      - containers
-
     - role: containers/resilio
       when: enable_resilio | default(False)
       tags: 
@@ -97,6 +91,11 @@
       tags: 
         - rpimonitor
         - containers
+
+    - role: homer
+      when: enable_homer | default(False)
+      tags: 
+      - homer
 
     - role: garminexport
       when: enable_garminexport | default(False)

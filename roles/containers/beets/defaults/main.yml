@@ -1,2 +1,7 @@
 ---
 container_name: beets
+dashboard_name: "Beets"
+dashboard_category: "Applications"
+dashboard_subtitle: "the music geek's media organizer"
+dashboard_url: "http://{{ ansible_default_ipv4.address }}:9000/#!/1/docker/containers/beets/exec"
+health_url: "http://{{ ansible_default_ipv4.address }}:7000/http://{{ ansible_default_ipv4.address }}:8337"

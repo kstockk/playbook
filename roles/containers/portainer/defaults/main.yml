@@ -1,2 +1,6 @@
 ---
 container_name: portainer
+dashbaord_name: Portainer
+dashboard_category: "Management"
+dashboard_subtitle: "Manage your docker containers"
+dashboard_url: "http://{{ ansible_default_ipv4.address }}:9000/#!/1/docker/containers"

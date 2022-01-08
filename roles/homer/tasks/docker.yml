@@ -1,0 +1,40 @@
+---
+- name: Ensure that the {{ container_name }} container is up-to-date and running
+  docker_container:
+    name: "{{ container_name }}"
+    image: b4bz/homer:latest
+    state: started
+    pull: yes
+    restart: yes
+    restart_policy: unless-stopped
+    env:
+      "UID": "{{ uid }}"
+      "GID": "{{ uid }}"
+    ports:
+      - "8282:8080"
+    volumes:
+      - "{{ docker_dir }}/{{ container_name }}:/www/assets"
+
+- name: Git clone cors-container
+  ansible.builtin.git:
+    repo: "https://github.com/imjacobclark/cors-container.git"
+    dest: "{{ ansible_env.PWD }}/projects/cors-container"
+    update: yes
+  become: no
+
+- name: Build cors-container image
+  docker_image:
+    name: cors-container
+    build:
+      path: "{{ ansible_env.PWD }}/projects/cors-container"
+    source: build
+
+- name: Ensure that the cors-container container is up-to-date and running
+  docker_container:
+    name: cors-container
+    image: cors-container
+    state: started
+    restart: yes
+    restart_policy: unless-stopped
+    ports:
+      - "7000:3000"

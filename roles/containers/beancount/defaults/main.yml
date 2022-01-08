@@ -1,2 +1,7 @@
 ---
 container_name: fava
+dashboard_name: "Fava"
+dashboard_category: "Applications"
+dashboard_subtitle: "Beancount Ledger"
+dashboard_url: "http://{{ ansible_default_ipv4.address }}:8089/khanhs-ledger/balance_sheet/?conversion=at_value"
+dashboard_type: false

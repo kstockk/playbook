@@ -1,2 +1,7 @@
 ---
 container_name: resilio-sync
+dashbaord_name: Resilio Sync
+dashboard_category: "Media | Files"
+dashboard_subtitle: "Peer-to-peer file synchronisation"
+dashboard_url: "http://{{ ansible_default_ipv4.address }}:8888/gui/"
+dashboard_type: false

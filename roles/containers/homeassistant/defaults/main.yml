@@ -1,2 +1,6 @@
 ---
 container_name: homeassistant
+dashboard_name: "Home Assistant"
+dashboard_category: "Applications"
+dashboard_subtitle: "Automate your home"
+dashboard_type: false
