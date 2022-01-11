@@ -13,6 +13,11 @@
       "DNS1": "127.0.0.1#5335" # Hardcoded to our Unbound server
       "DNS2": "127.0.0.1#5335" # Hardcoded to our Unbound server
       "DNSSEC": "true" # Enable DNSSEC
+      "REV_SERVER": "true" # Enable conditional forwarding
+      "REV_SERVER_DOMAIN": "local"
+      "REV_SERVER_TARGET": "{{ ansible_default_ipv4.gateway }}"
+      "REV_SERVER_CIDR": "{{ '.'.join(ansible_default_ipv4.address.split('.')[0:3]) }}.0/24"
+      "DOMAIN_NAME": "pihole.local"
     volumes:
       - "{{ docker_dir }}/{{ container_name }}/pihole:/etc/pihole"
       - "{{ docker_dir }}/{{ container_name }}/dnmasq-unbound:/etc/dnsmasq.d"
