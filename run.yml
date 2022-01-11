@@ -50,6 +50,12 @@
       - adguard
       - containers
 
+    - role: containers/pihole
+      when: enable_pihole | default(False)
+      tags: 
+      - pihole
+      - containers
+
     - role: containers/portainer
       when: enable_portainer | default(False)
       tags: 

@@ -113,9 +113,11 @@ samba_shares:
 
 enable_duckdns: true
 
+enable_pihole: true
+
 enable_nginx: false
 
-enable_adguard: true
+enable_adguard: false
 
 enable_homer: true
 

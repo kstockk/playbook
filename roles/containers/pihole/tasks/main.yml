@@ -1,0 +1,24 @@
+---
+- name: Ensure that the {{ container_name }} container is up-to-date and running
+  docker_container:
+    name: 'pihole'
+    image: "cbcrowe/pihole-unbound"
+    hostname: "{{ inventory_hostname }}"
+    pull: true
+    state: 'started'
+    env:
+      "ServerIP": "{{ ansible_default_ipv4.address }}"
+      "TZ": "{{ timezone }}"
+      "WEBPASSWORD": "{{ pihole_password }}"
+      "DNS1": "127.0.0.1#5335" # Hardcoded to our Unbound server
+      "DNS2": "127.0.0.1#5335" # Hardcoded to our Unbound server
+      "DNSSEC": "true" # Enable DNSSEC
+    volumes:
+      - "{{ docker_dir }}/{{ container_name }}/pihole:/etc/pihole"
+      - "{{ docker_dir }}/{{ container_name }}/dnmasq-unbound:/etc/dnsmasq.d"
+    ports:
+      - 443:443/tcp
+      - 53:53/tcp
+      - 53:53/udp
+      - 80:80/tcp
+    restart_policy: unless-stopped
