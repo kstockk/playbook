@@ -139,6 +139,8 @@ enable_beancount: true
 
 enable_beets: true
 
+enable_nocodb: true
+
 enable_rpimonitor: true
 
 enable_garminexport: true

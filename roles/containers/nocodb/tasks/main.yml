@@ -1,0 +1,41 @@
+---
+- name: Ensure that the {{ container_name }} network is created and running
+  docker_network:
+    name: "{{ container_name }}"
+
+- name: Ensure that the {{ container_name }} MariaDB container is created and running
+  docker_container:
+    name: "nocodb-mariadb"
+    image: "arm64v8/mariadb:10.5"
+    pull: yes
+    command: "mysqld --transaction-isolation=READ-COMMITTED --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --max-connections=512 --innodb-rollback-on-timeout=OFF --innodb-lock-wait-timeout=50"
+    state: 'started'
+    env:
+      "MYSQL_ROOT_PASSWORD": "{{ nocodb_root_password }}"
+      "MYSQL_DATABASE": "{{ nocodb_db }}"
+      "MYSQL_USER": "{{ nocodb_user }}"
+      "MYSQL_PASSWORD": "{{ nocodb_pw }}"
+    volumes:
+      - "{{ docker_dir }}/{{ container_name }}/mysql:/var/lib/mysql"
+    restart_policy: unless-stopped
+    security_opts:
+      - seccomp:unconfined
+      - apparmor:unconfined
+    networks:
+      - name: "{{ container_name }}"
+
+- name: Ensure that the {{ container_name }} container is up-to-date and running
+  docker_container:
+    name: "{{ container_name }}"
+    image: nocodb/nocodb:latest
+    state: started
+    pull: yes
+    restart: yes
+    restart_policy: unless-stopped
+    ports:
+      - "9090:8080"
+    env:
+      "NC_DB": "mysql2://nocodb-mariadb:3306?u={{ nocodb_user }}&p={{ nocodb_pw }}&d={{ nocodb_db }}"
+      "NC_DISABLE_TELE": "true"
+    networks:
+      - name: "{{ container_name }}"

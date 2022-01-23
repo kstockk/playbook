@@ -92,6 +92,12 @@
         - beets
         - containers
 
+    - role: containers/nocodb
+      when: enable_nocodb | default(False)
+      tags: 
+        - nocodb
+        - containers
+
     - role: containers/rpimonitor
       when: enable_rpimonitor | default(False)
       tags: 

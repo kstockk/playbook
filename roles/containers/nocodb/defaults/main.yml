@@ -1,0 +1,6 @@
+---
+container_name: nocodb
+dashboard_name: "NocoDB"
+dashboard_category: "Applications"
+dashboard_subtitle: "No-code Database"
+dashboard_url: "http://{{ ansible_default_ipv4.address }}:9090"
