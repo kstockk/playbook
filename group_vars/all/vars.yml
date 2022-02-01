@@ -115,7 +115,7 @@ enable_duckdns: true
 
 enable_pihole: true
 
-enable_nginx: false
+enable_nginx: true
 
 enable_adguard: false
 
@@ -130,6 +130,8 @@ enable_unifi: true
 enable_portainer: true
 
 enable_homeassistant: true
+
+enable_zigbee2mqtt: true
 
 enable_photoprism: true
 

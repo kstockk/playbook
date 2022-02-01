@@ -68,6 +68,12 @@
         - homeassistant
         - containers
 
+    - role: containers/zigbee2mqtt
+      when: enable_zigbee2mqtt | default(False)
+      tags: 
+        - zigbee2mqtt
+        - containers
+
     - role: containers/photoprism
       when: enable_photoprism | default(False)
       tags: 

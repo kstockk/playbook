@@ -1,0 +1,82 @@
+---
+- name: Disable bluetooth in /boot/config.txt
+  lineinfile:
+    dest: "/boot/config.txt"
+    state: present
+    regexp: "^{{ item }}"
+    line: "{{ item }}"
+  with_items:
+    - "# Disable Bluetooth\ndtoverlay=disable-bt"
+
+- name: Get the list of services
+  service_facts:
+
+- name: Disable bluetooth services
+  service:
+    name: "{{ item }}"
+    enabled: no
+    state: stopped
+  with_items:
+    - hciuart
+    - bluealsa
+    - bluetooth
+  when: "'{{ item }}.service' in services"
+
+- name: Uninstall packages
+  apt:
+    name: "{{ item }}"
+    state: absent
+    autoremove: yes
+  with_items:
+    - bluez
+    - autoremove
+
+- name: Check if reboot required
+  stat:
+    path: /var/run/reboot-required
+  register: reboot_required_file
+
+- name: Reboot if required
+  reboot:
+    msg: Rebooting due to a kernel update
+  when: reboot_required_file.stat.exists == true
+
+- name: Ensure that the {{ container_name }} network is created and running
+  docker_network:
+    name: "{{ container_name }}"
+
+- name: Ensure that the {{ container_name }} container is created and running
+  docker_container:
+    name: broker
+    image: eclipse-mosquitto
+    state: started
+    pull: yes
+    restart: yes
+    restart_policy: unless-stopped
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      # - "{{ docker_dir }}/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf"
+      - "{{ docker_dir }}/mosquitto/data:/mosquitto/data"
+    command: "mosquitto -c /mosquitto-no-auth.conf"
+    networks:
+      - name: "{{ container_name }}"
+
+- name: Ensure that the {{ container_name }} container is created and running
+  docker_container:
+    name: zigbee2mqtt
+    image: koenkk/zigbee2mqtt
+    state: started
+    pull: yes
+    restart: yes
+    restart_policy: unless-stopped
+    env:
+      TZ={{ timezone }}
+    volumes:
+      - "{{ docker_dir }}/{{ container_name }}/data:/app/data"
+      - "/run/udev:/run/udev:ro"
+    devices:
+      - /dev/ttyACM0
+    networks:
+      - name: "{{ container_name }}"
