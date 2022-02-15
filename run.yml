@@ -26,6 +26,12 @@
       - duckdns
       - cron
 
+    - role: containers/wireguard
+      when: enable_wireguard | default(False)
+      tags: 
+      - wireguard
+      - containers
+
     - role: containers/nginx
       when: enable_nginx | default(False)
       tags: 

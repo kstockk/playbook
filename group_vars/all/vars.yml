@@ -11,7 +11,6 @@ locale: en_AU.UTF-8
 
 timezone: "Australia/Melbourne"
 
-#
 # Pointer
 #
 
@@ -110,6 +109,8 @@ samba_shares:
 #
 # Services
 #
+
+enable_wireguard: true
 
 enable_duckdns: true
 
