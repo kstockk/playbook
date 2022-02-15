@@ -116,7 +116,7 @@ enable_duckdns: true
 
 enable_pihole: true
 
-enable_nginx: true
+enable_nginx: false
 
 enable_adguard: false
 
@@ -142,7 +142,7 @@ enable_beancount: true
 
 enable_beets: true
 
-enable_nocodb: true
+enable_nocodb: false
 
 enable_rpimonitor: true
 

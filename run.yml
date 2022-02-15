@@ -1,7 +1,7 @@
 ---
 - hosts: khazpie
   become: yes
-  
+
   roles:
     - role: essentials
       tags:
@@ -136,3 +136,8 @@
       when: enable_timemachine | default(False)
       tags: 
         - timemachine
+
+  post_tasks:
+    - import_tasks: tasks/remove_disabled.yml
+      tags:
+        - containers
