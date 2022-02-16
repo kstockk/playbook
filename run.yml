@@ -10,7 +10,11 @@
     - role: filesystem/mount
       tags:
         - mount
-    
+
+    - role: docker
+      tags:
+        - docker
+
     - role: chriswayg.msmtp-mailer
       tags: 
         - msmtp
@@ -23,20 +27,20 @@
     - role: duckdns
       when: enable_duckdns | default(False)
       tags: 
-      - duckdns
-      - cron
+        - duckdns
+        - cron
 
     - role: containers/wireguard
       when: enable_wireguard | default(False)
       tags: 
-      - wireguard
-      - containers
+        - wireguard
+        - containers
 
     - role: containers/nginx
       when: enable_nginx | default(False)
       tags: 
-      - nginx
-      - containers
+        - nginx
+        - containers
 
     - role: containers/resilio
       when: enable_resilio | default(False)
@@ -47,26 +51,26 @@
     - role: containers/unifi
       when: enable_unifi | default(False)
       tags: 
-      - unifi
-      - containers
+        - unifi
+        - containers
 
     - role: containers/adguard
       when: enable_adguard | default(False)
       tags: 
-      - adguard
-      - containers
+        - adguard
+        - containers
 
     - role: containers/pihole
       when: enable_pihole | default(False)
       tags: 
-      - pihole
-      - containers
+        - pihole
+        - containers
 
     - role: containers/portainer
       when: enable_portainer | default(False)
       tags: 
-      - portainer
-      - containers
+        - portainer
+        - containers
 
     - role: containers/homeassistant
       when: enable_homeassistant | default(False)

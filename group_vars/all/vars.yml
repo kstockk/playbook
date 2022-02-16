@@ -38,6 +38,8 @@ timemachine_backups:
     src: "/home"
     dest: "{{ timemachine_root }}/home_backups"
 
+restore_from_timemachine: true
+
 #
 # Rclone
 #

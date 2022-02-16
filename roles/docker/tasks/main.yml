@@ -1,16 +1,13 @@
 ---
-
 - name: Set Facts
   set_fact:
     repo: deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable
   when: ansible_architecture == "x86_64"
-  tags: docker
 
 - name: Set Facts
   set_fact:
     repo: deb [arch=armhf signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable
   when: ansible_architecture == "aarch64"
-  tags: docker
 
 - name: Install Prerequisites
   apt:
@@ -30,14 +27,12 @@
       - python3-pip
       - python3-venv
       - python-setuptools
-  tags: docker
 
 - name: Add Docker's official GPG key
   apt_key:
     url: https://download.docker.com/linux/debian/gpg
     state: present
     keyring: /usr/share/keyrings/docker-archive-keyring.gpg
-  tags: docker
 
 - name: Add Docker Stable Repository
   apt_repository:
@@ -45,7 +40,6 @@
     state: present
     filename: docker
     update_cache: yes
-  tags: docker
 
 - name: Install Docker Engine 
   apt:
@@ -86,3 +80,39 @@
       - docker-compose
     executable: pip3
   tags: docker
+
+# Should I stop all containers first? Rare scenario...
+
+- name: Setup {{ docker_dir }}
+  when: "restore_from_timemachine | default(False)"
+  block:
+  - name: Check if {{ docker_dir }} directory exists
+    stat:
+      path: "{{ docker_dir }}"
+    register: docker_dir
+
+  - name: Check if {{ docker_dir }} directory is empty
+    find:
+      paths:
+        - "{{ docker_dir }}"
+      recurse: yes
+    register: docker_data_find
+    when: docker_dir.stat.exists
+
+  - name: Create {{ docker_dir }} directory
+    file:
+      path: "{{ docker_dir }}"
+      state: directory
+      owner: "{{ username }}"
+      group: "{{ username }}"
+      mode: "0755"
+    when: not docker_dir.stat.exists
+  
+  - name: Restore the "{{ docker_dir }}" folder from the timemachine backup
+    synchronize:
+      src: "{{ timemachine_root }}/docker_data/"
+      dest: "{{ docker_dir }}"
+      delete: true
+      recursive: yes
+    delegate_to: "{{ inventory_hostname }}"
+    when: not docker_dir.stat.exists or docker_data_find.matched == 0
