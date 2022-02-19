@@ -11,10 +11,6 @@
       tags:
         - mount
 
-    - role: docker
-      tags:
-        - docker
-
     - role: chriswayg.msmtp-mailer
       tags: 
         - msmtp
@@ -30,28 +26,15 @@
         - duckdns
         - cron
 
-    - role: containers/wireguard
-      when: enable_wireguard | default(False)
-      tags: 
-        - wireguard
-        - containers
+    #
+    # Docker Services (tags: containers)
+    #
 
-    - role: containers/nginx
-      when: enable_nginx | default(False)
-      tags: 
-        - nginx
-        - containers
+    # Priority List (docker, network containers and portainer)
 
-    - role: containers/resilio
-      when: enable_resilio | default(False)
-      tags: 
-      - resilio
-      - containers
-
-    - role: containers/unifi
-      when: enable_unifi | default(False)
-      tags: 
-        - unifi
+    - role: docker
+      tags:
+        - docker
         - containers
 
     - role: containers/adguard
@@ -66,29 +49,31 @@
         - pihole
         - containers
 
+    - role: containers/wireguard
+      when: enable_wireguard | default(False)
+      tags: 
+        - wireguard
+        - containers
+
+    - role: containers/nginx
+      when: enable_nginx | default(False)
+      tags: 
+        - nginx
+        - containers
+
+    - role: containers/unifi
+      when: enable_unifi | default(False)
+      tags: 
+        - unifi
+        - containers
+
     - role: containers/portainer
       when: enable_portainer | default(False)
       tags: 
         - portainer
         - containers
 
-    - role: containers/homeassistant
-      when: enable_homeassistant | default(False)
-      tags: 
-        - homeassistant
-        - containers
-
-    - role: containers/zigbee2mqtt
-      when: enable_zigbee2mqtt | default(False)
-      tags: 
-        - zigbee2mqtt
-        - containers
-
-    - role: containers/photoprism
-      when: enable_photoprism | default(False)
-      tags: 
-        - photoprism
-        - containers
+    # Priority List End
 
     - role: containers/airsonic
       when: enable_airsonic | default(False)
@@ -108,11 +93,29 @@
         - beets
         - containers
 
+    - role: containers/homeassistant
+      when: enable_homeassistant | default(False)
+      tags: 
+        - homeassistant
+        - containers
+
     - role: containers/nocodb
       when: enable_nocodb | default(False)
       tags: 
         - nocodb
         - containers
+
+    - role: containers/photoprism
+      when: enable_photoprism | default(False)
+      tags: 
+        - photoprism
+        - containers
+
+    - role: containers/resilio
+      when: enable_resilio | default(False)
+      tags: 
+      - resilio
+      - containers
 
     - role: containers/rpimonitor
       when: enable_rpimonitor | default(False)
@@ -120,10 +123,23 @@
         - rpimonitor
         - containers
 
+    - role: containers/zigbee2mqtt
+      when: enable_zigbee2mqtt | default(False)
+      tags: 
+        - zigbee2mqtt
+        - containers
+
+    # Ensure homer role is last within Docker Services
+
     - role: homer
       when: enable_homer | default(False)
       tags: 
-      - homer
+        - homer
+        - containers
+
+    #
+    # Docker Services End
+    #
 
     - role: garminexport
       when: enable_garminexport | default(False)
@@ -140,8 +156,3 @@
       when: enable_timemachine | default(False)
       tags: 
         - timemachine
-
-  post_tasks:
-    - import_tasks: tasks/remove_disabled.yml
-      tags:
-        - containers

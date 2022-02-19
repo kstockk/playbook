@@ -1,0 +1,50 @@
+---
+- name: Get list of docker containers
+  shell: 'docker ps --format {%raw%}"{{ .Names }}"{%endraw%} -a'
+  register: docker_info
+
+- name: Destory all docker containers
+  docker_container:
+    name: "{{ item }}"
+    state: absent
+  with_items: "{{ docker_info.stdout_lines }}"
+
+- name: Check to see if {{ timemachine_root }} is mounted
+  set_fact:
+    timemachine_mounted: true
+  when: "{{ item.mount == timemachine_root }}"
+  with_items: "{{ ansible_mounts }}"
+
+- name: Setup {{ docker_dir }}
+  when: "restore_from_timemachine | default(False)"
+  block:
+  - name: Check if {{ docker_dir }} directory exists
+    stat:
+      path: "{{ docker_dir }}"
+    register: persistent_data
+
+  - name: Check if {{ docker_dir }} directory is empty
+    find:
+      paths:
+        - "{{ docker_dir }}"
+      recurse: yes
+    register: persistent_data_find
+    when: persistent_data.stat.exists
+
+  - name: Create {{ docker_dir }} directory
+    file:
+      path: "{{ docker_dir }}"
+      state: directory
+      owner: "{{ username }}"
+      group: "{{ username }}"
+      mode: "0755"
+    when: not persistent_data.stat.exists
+  
+  - name: Restore the "{{ docker_dir }}" folder from the timemachine backup
+    synchronize:
+      src: "{{ timemachine_root }}/docker_data/"
+      dest: "{{ docker_dir }}"
+      delete: true
+      recursive: yes
+    delegate_to: "{{ inventory_hostname }}"
+    when: (timemachine_mounted) and (not persistent_data.stat.exists or persistent_data_find.matched == 0)
