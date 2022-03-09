@@ -67,7 +67,7 @@
 
 - name: Add arm_64bit=1 to /boot/config.txt under [pi4]
   shell: sed -i 's/\[pi4\]/\[pi4\]\narm_64bit=1/g' /boot/config.txt
-  when: grep_output.stdout != "false"
+  when: grep_output.stdout = "false"
 
 - name: Check if reboot required
   stat:
