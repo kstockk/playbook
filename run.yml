@@ -147,8 +147,8 @@
       tags:
         - garminexport
 
-    - role: stefangweichinger.ansible_rclone
-      when: enable_timemachine | default(False)
+    - role: filesystem/rclone
+      when: enable_rclone | default(False)
       tags:
         - rclone
 

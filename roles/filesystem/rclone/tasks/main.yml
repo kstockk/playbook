@@ -1,0 +1,6 @@
+---
+- name: Change rclone_config ownership and group
+  file:
+    path: "{{ rclone_config_location }}"
+    owner: "{{ username }}"
+    group: "{{ username }}"

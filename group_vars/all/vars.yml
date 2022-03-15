@@ -44,7 +44,11 @@ restore_from_timemachine: true
 # Rclone
 #
 
-rclone_arch: "arm-v7"
+# rclone_config in secrets.yml
+
+rclone_arch: "arm"
+
+rclone_config_location: "/home/{{ username }}/.config/rclone/rclone.conf"
 
 rclone_backups:
   - name: "Backup {{ pointer_root }} to Onedrive"
@@ -117,6 +121,8 @@ enable_wireguard: true
 enable_duckdns: true
 
 enable_pihole: true
+
+enable_rclone: true
 
 enable_nginx: false
 
