@@ -26,6 +26,15 @@
     repo: "https://github.com/kstockk/ledger_importers.git"
     dest: "{{ docker_dir }}/{{ container_name }}/config/ledger_importers"
     update: yes
+  become: no
+  tags: custom
+
+- name: Update custom scheduler
+  ansible.builtin.git:
+    repo: "https://github.com/kstockk/beancount-scheduler.git"
+    dest: "{{ docker_dir }}/{{ container_name }}/config/beancount-scheduler"
+    update: yes
+  become: no
   tags: custom
 
 - name: Ensure that the {{ container_name }} container is created and running
@@ -101,6 +110,15 @@
     - is_monthly_bals
   tags: cron
   register: query_results
+
+- name: Create cron job at 05:30 daily post scheduled transactions
+  ansible.builtin.cron:
+    name: "[fava] Post Scheduled transactions"
+    user: "{{ username }}"
+    minute: "30"
+    hour: "5"
+    job: "python {{ docker_dir }}/{{ container_name }}/config/beancount-scheduler/scheduler.py {{ beancount_data }}/scheduled.yml"    
+  tags: cron
 
 - name: Create cron job at 06:00 daily to export is_monthly_bals query data and Update budget worksheet
   ansible.builtin.cron:
