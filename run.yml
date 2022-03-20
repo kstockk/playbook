@@ -156,3 +156,8 @@
       when: enable_timemachine | default(False)
       tags: 
         - timemachine
+
+    - role: filesystem/hd-idle
+      when: enable_hdidle | default(False)
+      tags: 
+        - hd-idle

@@ -11,6 +11,8 @@ locale: en_AU.UTF-8
 
 timezone: "Australia/Melbourne"
 
+spindown_time: 600 # in seconds
+
 # Pointer
 #
 
@@ -155,3 +157,5 @@ enable_nocodb: false
 enable_rpimonitor: true
 
 enable_garminexport: true
+
+enable_hdidle: true
