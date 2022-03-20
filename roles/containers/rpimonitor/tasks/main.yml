@@ -49,6 +49,7 @@
       - "/sys:/sys:ro"
       - "/var/lib/docker/:/var/lib/docker:ro"
       - "/dev/disk/:/dev/disk:ro"
+      - "/etc/machine-id:/etc/machine-id:ro"
     restart_policy: unless-stopped
     security_opts:
       - label=disable
