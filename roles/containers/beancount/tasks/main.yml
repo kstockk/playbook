@@ -108,6 +108,7 @@
     - query.sh
     - update_budget.sh
     - is_monthly_bals
+    - eom_balances
   tags: cron
   register: query_results
 
@@ -132,3 +133,16 @@
     - query_results.results[0].stat.exists
     - query_results.results[1].stat.exists
     - query_results.results[2].stat.exists
+  
+- name: Create cron job at 05:55 monthly to export eom_balances query data
+  ansible.builtin.cron:
+    name: "Export eom_balances query data"
+    user: "{{ username }}"
+    minute: "55"
+    hour: "5"
+    day: "2"
+    job: "bash {{ beancount_data }}/queries/query.sh -q eom_balances"    
+  tags: cron
+  when: 
+    - query_results.results[0].stat.exists
+    - query_results.results[3].stat.exists
