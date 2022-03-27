@@ -12,7 +12,7 @@
 - name: Check to see if {{ timemachine_root }} is mounted
   set_fact:
     timemachine_mounted: true
-  when: "{{ item.mount == timemachine_root }}"
+  when: "item.mount == timemachine_root"
   with_items: "{{ ansible_mounts }}"
 
 - name: Setup {{ docker_dir }}
