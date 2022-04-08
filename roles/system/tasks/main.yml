@@ -20,46 +20,49 @@
   command: "localectl set-locale LANG={{ locale }}"
   tags: lang
 
-- name: Installing packages
-  apt:
-    name: '{{ item }}'
+- name: Install extra packages
+  package:
+    name: "{{ extra_packages }}"
     state: present
-    update_cache: True
-  with_items:
-    - git
-    - vim
+
+- name: Install extra python packages
+  pip:
+    name: "{{ extra_pip }}"
+    state: present
 
 - name: Ensure fstrim.timer is enabled 
   ansible.builtin.systemd:
     state: started
     name: fstrim.timer
 
-- name: Copy the host's public SSH key to the remote server
-  become: no
-  authorized_key:
-    user: "{{ username }}"
-    state: present
-    key: "{{ lookup('file', '/Users/' + lookup('env', 'USER') + '/.ssh/id_rsa.pub') }}"
+# - name: Copy the host's public SSH key to the remote server
+#   become: no
+#   authorized_key:
+#     user: "{{ username }}"
+#     state: present
+#     key: "{{ lookup('file', '/Users/' + lookup('env', 'USER') + '/.ssh/id_rsa.pub') }}"
 
-- name: Check swap size
-  shell: grep -E "CONF_SWAPSIZE=100" /etc/dphys-swapfile || echo false
-  register: grep_output
+- name: Configure swap
+  block:
+  - name: Check swap size
+    shell: grep -E "CONF_SWAPSIZE=100" /etc/dphys-swapfile || echo false
+    register: grep_output
 
-- name: Disable Swap
-  shell: dphys-swapfile swapoff
-  when: grep_output.stdout != "false"
+  - name: Disable Swap
+    shell: dphys-swapfile swapoff
+    when: grep_output.stdout != "false"
 
-- name: Change swap size to 4gb
-  shell: sed -i 's/CONF_SWAPSIZE=100/CONF_SWAPSIZE=4096/g' /etc/dphys-swapfile
-  when: grep_output.stdout != "false"
+  - name: Change swap size to 4gb
+    shell: sed -i 's/CONF_SWAPSIZE=100/CONF_SWAPSIZE=4096/g' /etc/dphys-swapfile
+    when: grep_output.stdout != "false"
 
-- name: Initialise Swap File
-  shell: dphys-swapfile setup
-  when: grep_output.stdout != "false"
+  - name: Initialise Swap File
+    shell: dphys-swapfile setup
+    when: grep_output.stdout != "false"
 
-- name: Start Swap
-  shell: dphys-swapfile swapon
-  when: grep_output.stdout != "false"
+  - name: Start Swap
+    shell: dphys-swapfile swapon
+    when: grep_output.stdout != "false"
 
 - name: Check /boot/config.txt
   shell: grep -E "arm_64bit=1" /boot/config.txt || echo false
@@ -67,7 +70,7 @@
 
 - name: Add arm_64bit=1 to /boot/config.txt under [pi4]
   shell: sed -i 's/\[pi4\]/\[pi4\]\narm_64bit=1/g' /boot/config.txt
-  when: grep_output.stdout = "false"
+  when: grep_output.stdout == "false"
 
 - name: Check if reboot required
   stat:

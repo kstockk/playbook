@@ -72,6 +72,19 @@ beancount_data: "{{ pointer_root }}/Ledger"
 garminexport_data: "{{ pointer_root }}/Other/Activities"
 
 #
+# Packages
+#
+
+extra_packages:
+  - git
+  - vim
+  - screen
+
+extra_pip:
+  - glances
+  - pyyaml
+
+#
 # Email credentials
 #
 
