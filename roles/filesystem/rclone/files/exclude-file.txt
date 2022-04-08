@@ -16,3 +16,4 @@ Thumbs.db
 /.rclone/
 /var/lib/docker
 .sync/
+/.rsync_tmbackup/

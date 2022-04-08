@@ -50,14 +50,14 @@ restore_from_timemachine: true
 
 rclone_arch: "arm"
 
-rclone_config_location: "/home/{{ username }}/.config/rclone/rclone.conf"
+# rclone_config_location: "/home/{{ username }}/.config/rclone/rclone.conf"
 
 rclone_backups:
   - name: "Backup {{ pointer_root }} to Onedrive"
     hour: "1"
     minute: "5"
     src: "{{ pointer_root }}"
-    dest: "encrypted:"
+    dest: "encrypted:pointer"
 
 #
 # Directories
@@ -159,3 +159,5 @@ enable_rpimonitor: true
 enable_garminexport: true
 
 enable_hdidle: true
+
+enable_tiddlywiki: true

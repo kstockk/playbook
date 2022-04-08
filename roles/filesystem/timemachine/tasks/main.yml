@@ -51,35 +51,3 @@
     job: "docker stop $(docker ps -q) ; sudo rsync -avz --delete {{ docker_dir }}/ {{ timemachine_root }}/docker_data/ ; docker start $(docker ps -a -q)"
   become: no
   tags: cron
-
-- name: Create rclone_bkup directory
-  file:
-    path: "{{ scripts_dir }}/rclone_bkup"
-    state: directory
-    mode: "755"
-  tags: rclone
-
-- name: Copy rclone_bkup.sh to rclone_bkup directory
-  copy:
-    src: rclone_bkup.sh
-    dest: "{{ scripts_dir }}/rclone_bkup/rclone_bkup.sh"
-    mode: "755"
-  tags: rclone
-
-- name: Copy exclude-file.txt to rclone_bkup directory
-  copy:
-    src: exclude-file.txt
-    dest: "{{ scripts_dir }}/rclone_bkup/exclude-file.txt"
-    mode: "755"
-  tags: rclone
-
-- name: Create rclone backups
-  cron:
-    name: "{{ item.name }}"
-    hour: "{{ item.hour }}"
-    minute: "{{ item.minute }}"
-    job: 'sudo {{ scripts_dir }}/rclone_bkup/rclone_bkup.sh "{{ item.src }}" "{{ item.dest }}" > /dev/null 2>&1'
-  with_items:
-    - "{{ rclone_backups }}"
-  become: no
-  tags: rclone

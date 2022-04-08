@@ -149,7 +149,7 @@ exit_on_lock() {
     # it's syncing time!
     echo "starting rclone sync ($src -> $dest)" | format_output
     start_time="$(date +%s)"
-    rclone sync "$src" "$dest" -vv --log-file "$log_file" --exclude-from "$RCLONE_EXCLUDE_FILE" --retries 1 --low-level-retries 2
+    rclone sync "$src" "$dest" -vv --log-file "$log_file" --exclude-from "$RCLONE_EXCLUDE_FILE" --delete-excluded --retries 1 --low-level-retries 2
 
     # finato
     duration="$(display_time_difference "$start_time")"
