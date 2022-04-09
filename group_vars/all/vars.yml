@@ -155,7 +155,9 @@ samba_shares:
 # Services
 #
 
-enable_wireguard: true
+enable_pivpn: true
+
+enable_wireguard: false
 
 enable_duckdns: true
 

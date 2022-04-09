@@ -26,6 +26,11 @@
         - duckdns
         - cron
 
+    - role: pivpn
+      when: enable_pivpn | default(False)
+      tags: 
+        - pivpn  
+
     #
     # Docker Services (tags: containers)
     #
