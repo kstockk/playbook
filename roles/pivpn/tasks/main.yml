@@ -34,3 +34,27 @@
       msg: Rebooting due to a kernel update
     when: reboot_required_file.stat.exists == true
   when: not pivpn.stat.exists
+
+- name: Backup PiVPN configs every month
+  cron:
+    name: "Backup PiVPN configs every month"
+    day: "1"
+    hour: "20"
+    minute: "0"
+    job: "rsync -avz --delete /home/pi/configs/ /mnt/timemachine/pivpn/configs/"
+  become: no
+  tags: cron
+
+- name: Check if /home/{{ username }}/configs directory exists
+  stat:
+    path: "/home/{{ username }}/configs"
+  register: pivpn_dir
+
+- name: Restore PiVPN configs from the timemachine backup
+  synchronize:
+    src: "{{ timemachine_root }}/pivpn/configs"
+    dest: "/home/{{ username }}/configs"
+    delete: true
+    recursive: yes
+  delegate_to: "{{ inventory_hostname }}"
+  when: not pivpn_dir.stat.exists
