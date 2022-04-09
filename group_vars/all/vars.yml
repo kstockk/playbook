@@ -69,6 +69,19 @@ rclone_backups:
     dest: "encrypted:pointer"
 
 #
+# Docker Arm Configs
+#
+
+docker_version: latest
+
+docker_install_recommends: true
+
+docker_install_compose: true
+
+docker_users:
+  - "{{ username }}"
+
+#
 # Directories
 #
 

@@ -27,7 +27,7 @@
     find:
       paths:
         - "{{ docker_dir }}"
-      recurse: yes
+      recurse: no
     register: persistent_data_find
     when: persistent_data.stat.exists
 

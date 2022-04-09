@@ -2,3 +2,4 @@
 roles:
  - name: chriswayg.msmtp-mailer
  - name: stefangweichinger.ansible_rclone
+ - name: geerlingguy.docker_arm

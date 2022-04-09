@@ -58,20 +58,17 @@
     shell: /bin/bash
     groups: docker
     append: yes
-  tags: docker
 
 - name: Give permissions to /var/run/docker.sock
   file:
     path: /var/run/docker.sock
-    mode: '660'
-  tags: docker
+    mode: '666'
 
 - name: Enable and start Docker service
   systemd:
     name: docker.service
     enabled: true
     state: started
-  tags: docker
 
 - name: Install docker-compose
   pip:
@@ -79,4 +76,3 @@
       - cryptography==2.8
       - docker-compose
     executable: pip3
-  tags: docker
