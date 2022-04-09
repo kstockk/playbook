@@ -2,4 +2,6 @@
 - name: Include docker using Docker's repositories 
   include_tasks: install.yml
   when: ansible_architecture == "x86_64"
-# - include_tasks: restore.yml
+
+- name: Restore docker configs
+  include_tasks: restore.yml

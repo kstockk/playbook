@@ -1,14 +1,4 @@
 ---
-- name: Get list of docker containers
-  shell: 'docker ps --format {%raw%}"{{ .Names }}"{%endraw%} -a'
-  register: docker_info
-
-- name: Destory all docker containers
-  docker_container:
-    name: "{{ item }}"
-    state: absent
-  with_items: "{{ docker_info.stdout_lines }}"
-
 - name: Check to see if {{ timemachine_root }} is mounted
   set_fact:
     timemachine_mounted: true
@@ -27,6 +17,7 @@
     find:
       paths:
         - "{{ docker_dir }}"
+      file_type: any
       recurse: no
     register: persistent_data_find
     when: persistent_data.stat.exists
@@ -40,6 +31,18 @@
       mode: "0755"
     when: not persistent_data.stat.exists
   
+  - name: Get list of docker containers
+    shell: 'docker ps --format {%raw%}"{{ .Names }}"{%endraw%} -a'
+    register: docker_info
+    when: (timemachine_mounted) and (not persistent_data.stat.exists or persistent_data_find.matched == 0)
+
+  - name: Destory all docker containers
+    docker_container:
+      name: "{{ item }}"
+      state: absent
+    with_items: "{{ docker_info.stdout_lines }}"
+    when: (timemachine_mounted) and (not persistent_data.stat.exists or persistent_data_find.matched == 0)
+
   - name: Restore the "{{ docker_dir }}" folder from the timemachine backup
     synchronize:
       src: "{{ timemachine_root }}/docker_data/"
