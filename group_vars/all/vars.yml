@@ -11,8 +11,15 @@ locale: en_AU.UTF-8
 
 timezone: "Australia/Melbourne"
 
+#
+# Harddrive Idle
+#
+
+enable_hdidle: true
+
 spindown_time: 600 # in seconds
 
+#
 # Pointer
 #
 
@@ -23,6 +30,8 @@ pointer_drive: /dev/disk/by-label/pointer
 #
 # Time Machine
 #
+
+enable_timemachine: true
 
 timemachine_root: /mnt/timemachine
 
@@ -46,7 +55,7 @@ restore_from_timemachine: true
 # Rclone
 #
 
-# rclone_config in secrets.yml
+enable_rclone: true
 
 rclone_arch: "arm"
 
@@ -96,7 +105,8 @@ email_smtp_port: 465
 
 email_smtp_port_startls: 587
 
-# MSMTP 
+# MSMTP
+
 msmtp_accounts:
 - account:   gmail
   host:      "{{ email_smtp_host }}"
@@ -113,6 +123,7 @@ msmtp_alias_default : "{{ email }}"
 #
 # Samba
 #
+
 enable_samba: true
 
 samba_users:
@@ -137,15 +148,11 @@ enable_duckdns: true
 
 enable_pihole: true
 
-enable_rclone: true
-
 enable_nginx: false
 
 enable_adguard: false
 
 enable_homer: true
-
-enable_timemachine: true
 
 enable_resilio: true
 
@@ -167,10 +174,6 @@ enable_beets: true
 
 enable_nocodb: false
 
-enable_rpimonitor: true
+enable_rpimonitor: false
 
-enable_garminexport: true
-
-enable_hdidle: true
-
-enable_tiddlywiki: true
+enable_garminexport: false
