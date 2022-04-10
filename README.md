@@ -6,7 +6,7 @@ Ansible playbook for my Raspberry Pi 4.
 
 ## Preconfig
 
-1. Create a bootable SSD using the latest version of Raspberry Pi Imager (Raspberry Pi OS Lite (32-bit). Ensure the following customisation options are configured using the Advanced Menu (Ctrl+Shift+X)
+1. Create a bootable SSD using the latest version of Raspberry Pi Imager (Raspberry Pi OS Lite (64-bit). Ensure the following customisation options are configured using the Advanced Menu (Ctrl+Shift+X)
 
 -   Disable overscan
 -   Set the hostname
@@ -33,9 +33,7 @@ sudo rsync -aAXv --delete /mnt/timemachine/docker_data /opt/docker/data
 ```
 
 5. Configure dot files
-6. Restore rclone config file `~/.config/rclone/rclone.conf`
-7. Install [PiVPN](https://www.pivpn.io)
-8. Run the Ansible Playbook
+6. Run the Ansible Playbook
 	- Ensure that the group_vars and host_vars are all configured before running the Ansible Playbook
 
 ## Usage
@@ -47,7 +45,7 @@ brew install ansible
 
 Clone the repository:
 ```
-git clone https://github.com/notthebee/infra
+git clone https://github.com/kstockk/playbook
 ```
 
 Create a host varialbe file and adjust the variables:
