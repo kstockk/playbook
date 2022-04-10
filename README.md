@@ -1,10 +1,8 @@
 # kstockk/playbook
 
-This Anisble Playbook is heavily adopted from [notthebee/infra](https://github.com/notthebee/infra).
-
 Ansible playbook for my Raspberry Pi 4.
 
-## Preconfig
+## Provision Boot Drive
 
 1. Create a bootable SSD using the latest version of Raspberry Pi Imager (Raspberry Pi OS Lite (64-bit). Ensure the following customisation options are configured using the Advanced Menu (Ctrl+Shift+X)
 
@@ -15,28 +13,35 @@ Ansible playbook for my Raspberry Pi 4.
 -   Set the locale settings
 -   Disable telemetry
 
+## Deployment Procedure
+
+1. SSH into the server `ssh pi@hostname.local`
+
 2. Configure a static ip address `sudo nano /etc/dhcpcd.conf`
 
-3. Check drive details and ensure all drives are labelled
+3. Copy over the public SSH key to the server `$ ssh-copy-id pi@hostname.local`
+
+4. Check drive details and ensure all drives are labelled
 ```bash
 sudo lsblk -o UUID,NAME,FSTYPE,SIZE,MOUNTPOINT,LABEL,MODEL
+
+# To label a drive
 sudo e2label /dev/sdX1 label_name
 ```
 
-4. If necessary, manually mount the drive to restore from timemachine backup
+5. If necessary, manually mount the drive to restore from timemachine backup
 ```bash
 sudo mount -L timemachine /mnt/timemachine
 sudo rsync
 
-# to restore docker_data
+# To restore docker_data directory
 sudo rsync -aAXv --delete /mnt/timemachine/docker_data /opt/docker/data
 ```
 
-5. Configure dot files
 6. Run the Ansible Playbook
-	- Ensure that the group_vars and host_vars are all configured before running the Ansible Playbook
+	- Ensure that the group_vars and host_vars are **ALL** configured before running the Ansible Playbook
 
-## Usage
+## Playbook Usage
 
 Install Ansible (macOS):
 ```
@@ -93,3 +98,6 @@ For consecutive runs, if you only want to update the Docker containers, you can 
 ```
 ansible-playbook run.yml --tags="port,containers"
 ```
+## Credits
+
+This Anisble Playbook is heavily adopted from [notthebee/infra](https://github.com/notthebee/infra).
