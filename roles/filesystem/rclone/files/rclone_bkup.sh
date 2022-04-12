@@ -154,5 +154,9 @@ exit_on_lock() {
     # finato
     duration="$(display_time_difference "$start_time")"
     echo "success: rclone sync complete! (took "$duration")" | format_output
+    echo
+    echo "log output"
+    echo
+    cat $log_file | grep -Ew "INFO|Transferred|Checks|Elapsed time|^$"
 
 ) 9>"$lockfile"
