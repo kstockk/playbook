@@ -157,6 +157,6 @@ exit_on_lock() {
     echo
     echo "log output"
     echo
-    cat $log_file | grep -Ew "INFO|Transferred|Checks|Elapsed time|^$"
+    cat $log_file | grep -Ew "ERROR|INFO|Transferred|Checks|Elapsed time|^$"
 
 ) 9>"$lockfile"
