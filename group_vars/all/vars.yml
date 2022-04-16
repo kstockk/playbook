@@ -192,3 +192,5 @@ enable_nocodb: false
 enable_rpimonitor: false
 
 enable_garminexport: false
+
+enable_flame: true
