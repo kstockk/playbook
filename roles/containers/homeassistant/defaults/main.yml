@@ -5,3 +5,4 @@ dashboard_category: "Applications"
 dashboard_subtitle: "Automate your home"
 dashboard_url: "http://{{ ansible_default_ipv4.address }}:8123/"
 dashboard_type: false
+dashboard_icon: "home-assistant"
