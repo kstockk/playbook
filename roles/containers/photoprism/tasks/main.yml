@@ -27,7 +27,7 @@
 - name: Ensure that the {{ container_name }} container is created and running
   docker_container:
     name: "{{ container_name }}"
-    image: photoprism/photoprism:20211203
+    image: photoprism/photoprism
     pull: yes
     ports: 
       - "2342:2342"
@@ -65,3 +65,8 @@
     restart_policy: unless-stopped
     networks:
       - name: "{{ container_name }}"
+    labels:
+      "flame.type": "application"
+      "flame.name": "{{ dashboard_name }}"
+      "flame.url": "{{ dashboard_url }}"
+      "flame.icon": "{{ dashboard_icon }}"
