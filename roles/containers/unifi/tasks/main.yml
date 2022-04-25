@@ -15,3 +15,8 @@
       "UNIFI_GID": "{{ uid }}"
     volumes:
       - "{{ docker_dir }}/{{ container_name }}:/unifi"
+    labels:
+      "flame.type": "application"
+      "flame.name": "{{ dashboard_name }}"
+      "flame.url": "{{ dashboard_url }}"
+      "flame.icon": "{{ dashboard_icon }}"

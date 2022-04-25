@@ -17,3 +17,8 @@
       - "{{ docker_dir }}/{{ container_name }}:/config"
       - "{{ pointer_root }}/Music:/music"
       - "{{ pointer_root }}/Downloads:/downloads"
+    labels:
+      "flame.type": "application"
+      "flame.name": "{{ dashboard_name }}"
+      "flame.url": "{{ dashboard_url }}"
+      "flame.icon": "{{ dashboard_icon }}"

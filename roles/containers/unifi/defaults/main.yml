@@ -5,3 +5,4 @@ dashboard_category: "Management"
 dashboard_subtitle: "Manage your Unifi network"
 dashboard_url: "https://{{ ansible_default_ipv4.address }}:8443/manage/default/dashboard"
 dashboard_type: false
+dashboard_icon: "server-network"

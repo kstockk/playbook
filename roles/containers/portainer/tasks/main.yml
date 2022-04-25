@@ -13,3 +13,8 @@
     volumes:
       - "{{ docker_dir }}/{{ container_name }}:/data"
       - "/var/run/docker.sock:/var/run/docker.sock"
+    labels:
+      "flame.type": "application"
+      "flame.name": "{{ dashboard_name }}"
+      "flame.url": "{{ dashboard_url }}"
+      "flame.icon": "{{ dashboard_icon }}"

@@ -5,3 +5,4 @@ dashboard_category: "Media | Files"
 dashboard_subtitle: "Local music streaming server"
 dashboard_url: "http://{{ ansible_default_ipv4.address }}:4040/index"
 dashboard_type: false
+dashboard_icon: "music-box"
