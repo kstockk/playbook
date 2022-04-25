@@ -52,6 +52,11 @@
       - "{{ docker_dir }}/{{ container_name }}/config:/bean/config"
     networks:
       - name: "{{ container_name }}"
+    labels:
+      "flame.type": "application"
+      "flame.name": "{{ dashboard_name }}"
+      "flame.url": "{{ dashboard_url }}"
+      "flame.icon": "{{ dashboard_icon }}"
 
 - name: Ensure that the {{ container_name }}-auth container does not exist
   docker_container:
@@ -101,16 +106,22 @@
   tags: cron
   when: prices_file.stat.exists
 
-- name: Check if queries directory and files exists
+# - name: Check if queries directory and files exists
+#   stat:
+#     path: "{{ beancount_data }}/queries/{{ item }}"
+#   with_items:
+#     - query.sh
+#     - update_budget.sh
+#     - is_monthly_bals
+#     - eom_balances
+#   tags: cron
+#   register: query_results
+
+- name: Check if scheduler.py exists
   stat:
-    path: "{{ beancount_data }}/queries/{{ item }}"
-  with_items:
-    - query.sh
-    - update_budget.sh
-    - is_monthly_bals
-    - eom_balances
+    path: "{{ docker_dir }}/{{ container_name }}/config/beancount-scheduler/scheduler.py"
   tags: cron
-  register: query_results
+  register: scheduler_file
 
 - name: Create cron job at 05:30 daily post scheduled transactions
   ansible.builtin.cron:
@@ -120,29 +131,30 @@
     hour: "5"
     job: "python {{ docker_dir }}/{{ container_name }}/config/beancount-scheduler/scheduler.py {{ beancount_data }}/scheduled.yml"    
   tags: cron
+  when: scheduler_file.stat.exists
 
-- name: Create cron job at 06:00 daily to export is_monthly_bals query data and Update budget worksheet
-  ansible.builtin.cron:
-    name: "Export is_monthly_bals query data and Update budget worksheet"
-    user: "{{ username }}"
-    minute: "0"
-    hour: "6"
-    job: "bash {{ beancount_data }}/queries/query.sh -q is_monthly_bals -s 2021-11-01 && bash {{ beancount_data }}/queries/update_budget.sh"    
-  tags: cron
-  when: 
-    - query_results.results[0].stat.exists
-    - query_results.results[1].stat.exists
-    - query_results.results[2].stat.exists
+# - name: Create cron job at 06:00 daily to export is_monthly_bals query data and Update budget worksheet
+#   ansible.builtin.cron:
+#     name: "Export is_monthly_bals query data and Update budget worksheet"
+#     user: "{{ username }}"
+#     minute: "0"
+#     hour: "6"
+#     job: "bash {{ beancount_data }}/queries/query.sh -q is_monthly_bals -s 2021-11-01 && bash {{ beancount_data }}/queries/update_budget.sh"    
+#   tags: cron
+#   when: 
+#     - query_results.results[0].stat.exists
+#     - query_results.results[1].stat.exists
+#     - query_results.results[2].stat.exists
   
-- name: Create cron job at 05:55 monthly to export eom_balances query data
-  ansible.builtin.cron:
-    name: "Export eom_balances query data"
-    user: "{{ username }}"
-    minute: "55"
-    hour: "5"
-    day: "2"
-    job: "bash {{ beancount_data }}/queries/query.sh -q eom_balances"    
-  tags: cron
-  when: 
-    - query_results.results[0].stat.exists
-    - query_results.results[3].stat.exists
+# - name: Create cron job at 05:55 monthly to export eom_balances query data
+#   ansible.builtin.cron:
+#     name: "Export eom_balances query data"
+#     user: "{{ username }}"
+#     minute: "55"
+#     hour: "5"
+#     day: "2"
+#     job: "bash {{ beancount_data }}/queries/query.sh -q eom_balances"    
+#   tags: cron
+#   when: 
+#     - query_results.results[0].stat.exists
+#     - query_results.results[3].stat.exists
