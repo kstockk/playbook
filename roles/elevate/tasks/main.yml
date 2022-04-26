@@ -1,0 +1,15 @@
+---
+- name: Check if {{ elevate_data }} directory exists
+  stat:
+    path: "{{ elevate_data }}"
+  register: elevate_dir
+
+- name: Create cron job at 22:00 daily to copy new .fit files to Elevate directory
+  ansible.builtin.cron:
+    name: "Copy new .fit files to Elevate directory"
+    user: "{{ username }}"
+    minute: "0"
+    hour: "22"
+    job: 'sudo rclone lsd {{ healthfit_data }} && sudo rclone copy {{ healthfit_data }} {{ elevate_data }}  --include "*.fit" -v'    
+  tags: cron
+  when: elevate_dir.stat.exists

@@ -164,6 +164,12 @@
       tags:
         - garminexport
 
+    - role: elevate
+      when: enable_elevate | default(False)
+      become: no
+      tags:
+        - elevate
+
     - role: filesystem/rclone
       when: enable_rclone | default(False)
       tags:

@@ -94,6 +94,16 @@ beancount_data: "{{ pointer_root }}/Ledger"
 garminexport_data: "{{ pointer_root }}/Other/Activities"
 
 #
+# Elevate
+#
+
+enable_elevate: true
+
+healthfit_data: "onedrive:Apps/HealthFit"
+
+elevate_data: "{{ pointer_root }}/Elevate"
+
+#
 # Packages
 #
 
@@ -167,7 +177,7 @@ enable_nginx: false
 
 enable_adguard: false
 
-enable_homer: true
+enable_homer: false
 
 enable_resilio: true
 
