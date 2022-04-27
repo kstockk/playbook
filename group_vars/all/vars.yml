@@ -15,9 +15,9 @@ timezone: "Australia/Melbourne"
 # Harddrive Idle
 #
 
-enable_hdidle: true
+enable_hdidle: false
 
-spindown_time: 600 # in seconds
+spindown_time: 0 # in seconds; default is 600; 0 means disabled
 
 #
 # Pointer
