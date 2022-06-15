@@ -17,6 +17,12 @@
     dest: "{{ scripts_dir }}/rclone_bkup/rclone_bkup.sh"
     mode: "755"
 
+- name: Copy rclone_sync.sh to rclone_bkup directory
+  copy:
+    src: rclone_sync.sh
+    dest: "{{ scripts_dir }}/rclone_bkup/rclone_sync.sh"
+    mode: "755"
+
 - name: Copy exclude-file.txt to rclone_bkup directory
   copy:
     src: exclude-file.txt
