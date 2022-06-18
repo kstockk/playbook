@@ -1,0 +1,7 @@
+---
+container_name: actual
+dashboard_name: "Actual Budget"
+dashboard_category: "Finances"
+dashboard_subtitle: "Zero-based budgeting"
+dashboard_url: "http://{{ ansible_default_ipv4.address }}:5006"
+dashboard_icon: "cash-multiple"

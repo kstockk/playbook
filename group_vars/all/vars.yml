@@ -195,6 +195,8 @@ enable_airsonic: true
 
 enable_beancount: true
 
+enable_actual: true
+
 enable_beets: true
 
 enable_nocodb: false

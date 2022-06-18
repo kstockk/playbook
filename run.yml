@@ -104,6 +104,12 @@
         - beets
         - containers
 
+    - role: containers/actual
+      when: enable_actual | default(False)
+      tags: 
+        - actual
+        - containers
+
     - role: containers/homeassistant
       when: enable_homeassistant | default(False)
       tags: 
