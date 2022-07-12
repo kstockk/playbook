@@ -1,0 +1,17 @@
+
+# [pve:vars]
+
+#
+# Packages
+#
+
+extra_packages:
+  - qemu-guest-agent
+  - pip
+  - git
+  - vim
+
+extra_pip:
+  - glances
+  - pyyaml
+  - docker

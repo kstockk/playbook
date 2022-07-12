@@ -1,0 +1,14 @@
+---
+- hosts: pve
+  become: yes
+
+  roles:
+    
+    Docker Services (tags: containers)
+    
+
+    Priority List (docker, network containers and portainer)
+
+    - role: bootstrap
+
+    - role: docker
