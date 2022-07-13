@@ -10,8 +10,8 @@
     file:
       path: "{{ docker_dir }}/{{ container_name }}/{{ item }}"
       state: directory
-      owner: "{{ username }}"
-      group: "{{ username }}"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
       mode: "0755"
     with_items:
       - "data"
@@ -20,8 +20,8 @@
     file:
       path: "{{ docker_dir }}/{{ container_name }}/config.json"
       state: touch
-      owner: "{{ username }}"
-      group: "{{ username }}"
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
       mode: "0644"
   when: not docker_data.stat.exists
 
@@ -29,24 +29,38 @@
   docker_network:
     name: "{{ container_name }}"
 
+- name: Fetch OP Secret
+  onepassword.connect.field_info:
+    item: "Nginx Proxy Manager"
+    section: "MySQL Database"
+    field: "password"
+    vault: "{{ op_vault }}"
+  no_log: true
+  register: db_root_password
+
+- name: Fetch OP Secret
+  onepassword.connect.field_info:
+    item: "Nginx Proxy Manager"
+    section: "MySQL Database"
+    field: "root password"
+    vault: "{{ op_vault }}"
+  no_log: true
+  register: db_password
+
 - name: Ensure that the {{ container_name }} MariaDB container is created and running
   docker_container:
     name: "nginx-mariadb"
-    image: "arm64v8/mariadb:10.5"
+    image: "{{ docker_image }}"
     pull: yes
-    command: "mysqld --transaction-isolation=READ-COMMITTED --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --max-connections=512 --innodb-rollback-on-timeout=OFF --innodb-lock-wait-timeout=50"
     state: 'started'
     env:
-      "MYSQL_ROOT_PASSWORD": "npm"
+      "MYSQL_ROOT_PASSWORD": "{{ db_root_password.field.value }}"
       "MYSQL_DATABASE": "npm"
       "MYSQL_USER": "npm"
-      "MYSQL_PASSWORD": "npm"
+      "MYSQL_PASSWORD": "{{ db_password.field.value }}"
     volumes:
       - "{{ docker_dir }}/{{ container_name }}/mysql:/var/lib/mysql"
     restart_policy: unless-stopped
-    security_opts:
-      - seccomp:unconfined
-      - apparmor:unconfined
     networks:
       - name: "{{ container_name }}"
 
@@ -64,7 +78,7 @@
       "DB_MYSQL_HOST": "nginx-mariadb"
       "DB_MYSQL_PORT": "3306"
       "DB_MYSQL_USER": "npm"
-      "DB_MYSQL_PASSWORD": "npm"
+      "DB_MYSQL_PASSWORD": "{{ db_password.field.value }}"
       "DB_MYSQL_NAME": "npm"
       "DISABLE_IPV6": 'true'
     volumes:
@@ -76,3 +90,8 @@
       - name: "{{ container_name }}"
     links:
       - "nginx-mariadb"
+    labels:
+      "flame.type": "application"
+      "flame.name": "{{ flame.name }}"
+      "flame.url": "{{ flame.url }}"
+      "flame.icon": "{{ flame.icon }}"

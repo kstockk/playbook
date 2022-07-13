@@ -1,4 +1,6 @@
 
+# [raspberry:vars]
+
 #
 # Standard
 #
@@ -74,14 +76,9 @@ docker_install_recommends: true
 
 docker_install_compose: true
 
-docker_users:
-  - "{{ username }}"
-
 #
 # Directories
 #
-
-docker_dir: /opt/docker/data
 
 scripts_dir: /opt/scripts
 

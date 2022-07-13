@@ -5,8 +5,9 @@
 
 - name: Update and upgrade apt packages (Debian and Ubuntu)
   when: ansible_os_family == "Debian"
-  shell:
-    cmd: apt update && apt upgrade -y
+  apt:
+    upgrade: yes
+    update_cache: yes
 
 - name: Generate the locale (Debian and Ubuntu)
   when: ansible_os_family == "Debian"
