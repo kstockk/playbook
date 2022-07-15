@@ -4,5 +4,3 @@ roles:
   - name: stefangweichinger.ansible_rclone
   - name: geerlingguy.docker_arm
   - name: geerlingguy.docker
-collections:
-  - onepassword.connect

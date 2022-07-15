@@ -18,4 +18,8 @@ extra_pip:
 
 # Services
 
+enable_duckdns: true
+
+enable_flame: true
+
 enable_nginx: true

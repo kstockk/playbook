@@ -1,7 +1,29 @@
 ---
+- name: Check if /opt/duckdns/ directory exists
+  stat:
+    path: "/opt/duckdns"
+  register: config_dir
+
+- name: Create /opt/duckdns/ directory if it doesn't already exist
+  file:
+    path: "/opt/duckdns/"
+    state: directory
+    owner: "{{ ansible_user }}"
+    mode: "0755"
+  when: not config_dir.stat.exists
+
+- name: Create /opt/duckdns/duck.log
+  file:
+    path: "/opt/duckdns/duck.log"
+    state: touch
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "0644"
+  when: not config_dir.stat.exists
+
 - name: Update DuckDNS IP
   cron:
     name: "Update DuckDNS IP"
     minute: "*/5"
-    job: "echo url=\"https://www.duckdns.org/update?domains={{ duckdns_domain }}&token={{ duckdns_token }}&ip=&verbose=true\" | curl -k -o {{ docker_dir }}/duckdns/duck.log -K - > /dev/null 2>&1"
+    job: "echo url=\"https://www.duckdns.org/update?domains={{ duckdns_domain }}&token={{ duckdns_token }}&ip=&verbose=true\" | curl -k -o /opt/duckdns/duck.log -K - > /dev/null 2>&1"
   become: no

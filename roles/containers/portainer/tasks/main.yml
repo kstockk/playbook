@@ -15,6 +15,6 @@
       - "/var/run/docker.sock:/var/run/docker.sock"
     labels:
       "flame.type": "application"
-      "flame.name": "{{ dashboard_name }}"
-      "flame.url": "{{ dashboard_url }}"
-      "flame.icon": "{{ dashboard_icon }}"
+      "flame.name": "{{ flame.name }}"
+      "flame.url": "{{ flame.url }}"
+      "flame.icon": "{{ flame.icon }}"

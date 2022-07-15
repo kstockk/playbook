@@ -1,25 +1,31 @@
 ---
 - hosts: pve
   become: yes
-  environment:
-    OP_CONNECT_HOST: http://192.168.1.31:8066
-    OP_CONNECT_TOKEN: "{{ OP_CONNECT_TOKEN }}"
-  collections:
-    - onepassword.connect
 
   roles:
-    
-    # Docker Services (tags: containers)
-    
 
-    # Priority List (docker, network containers and portainer)
-
+    # Initial set-up of system
     - role: bootstrap
-
     - role: docker
+
+    # Enable Duck DNS
+    - role: duckdns
+      when: enable_duckdns | default(False)
+      tags: 
+        - duckdns
+        - cron
+
+    # Docker containers
+    - role: containers/portainer
 
     - role: containers/nginx
       when: enable_nginx | default(False)
       tags: 
         - nginx
+        - containers
+
+    - role: containers/flame
+      when: enable_flame | default(False)
+      tags: 
+        - flame
         - containers

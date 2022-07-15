@@ -20,6 +20,10 @@
   command: "localectl set-locale LANG={{ locale }}"
   tags: lang
 
+- name: Set timezone
+  community.general.timezone:
+    name: "{{ timezone }}"
+
 - name: Install extra packages
   apt:
     name: "{{ extra_packages }}"
@@ -44,3 +48,19 @@
   reboot:
     msg: Rebooting due to a kernel update
   when: reboot_required_file.stat.exists == true
+
+- name: Configure cron PATH
+  cron:
+    name: PATH
+    user: "{{ ansible_user }}"
+    env: yes
+    job: "/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin"
+  tags: cron
+
+- name: Enable cron e-mail notifications
+  cron:
+    name: MAILTO
+    user: "{{ ansible_user }}"
+    env: yes
+    job: "{{ cron_email }}"
+  tags: cron

@@ -1,7 +1,6 @@
 ---
 container_name: portainer
-dashboard_name: Portainer
-dashboard_category: "Management"
-dashboard_subtitle: "Manage your docker containers"
-dashboard_url: "http://{{ ansible_default_ipv4.address }}:9000/#!/1/docker/containers"
-dashboard_icon: "docker"
+flame:
+  name: "Portainer"
+  url: "http://portainer.lab"
+  icon: "docker"

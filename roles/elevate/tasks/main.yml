@@ -3,6 +3,7 @@
   stat:
     path: "{{ elevate_data }}"
   register: elevate_dir
+  tags: cron
 
 - name: Create cron job at 22:00 daily to copy new .fit files to Elevate directory
   ansible.builtin.cron:

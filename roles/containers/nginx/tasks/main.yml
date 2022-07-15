@@ -29,24 +29,6 @@
   docker_network:
     name: "{{ container_name }}"
 
-- name: Fetch OP Secret
-  onepassword.connect.field_info:
-    item: "Nginx Proxy Manager"
-    section: "MySQL Database"
-    field: "password"
-    vault: "{{ op_vault }}"
-  no_log: true
-  register: db_root_password
-
-- name: Fetch OP Secret
-  onepassword.connect.field_info:
-    item: "Nginx Proxy Manager"
-    section: "MySQL Database"
-    field: "root password"
-    vault: "{{ op_vault }}"
-  no_log: true
-  register: db_password
-
 - name: Ensure that the {{ container_name }} MariaDB container is created and running
   docker_container:
     name: "nginx-mariadb"
@@ -54,10 +36,10 @@
     pull: yes
     state: 'started'
     env:
-      "MYSQL_ROOT_PASSWORD": "{{ db_root_password.field.value }}"
+      "MYSQL_ROOT_PASSWORD": "{{ nginx_db_root_pw }}"
       "MYSQL_DATABASE": "npm"
       "MYSQL_USER": "npm"
-      "MYSQL_PASSWORD": "{{ db_password.field.value }}"
+      "MYSQL_PASSWORD": "{{ nginx_db_password }}"
     volumes:
       - "{{ docker_dir }}/{{ container_name }}/mysql:/var/lib/mysql"
     restart_policy: unless-stopped
@@ -78,7 +60,7 @@
       "DB_MYSQL_HOST": "nginx-mariadb"
       "DB_MYSQL_PORT": "3306"
       "DB_MYSQL_USER": "npm"
-      "DB_MYSQL_PASSWORD": "{{ db_password.field.value }}"
+      "DB_MYSQL_PASSWORD": "{{ nginx_db_password }}"
       "DB_MYSQL_NAME": "npm"
       "DISABLE_IPV6": 'true'
     volumes:
