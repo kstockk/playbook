@@ -15,7 +15,10 @@
         - duckdns
         - cron
 
-    # Docker containers
+    #
+    # Docker Services Start
+    #
+    
     - role: containers/portainer
 
     - role: containers/nginx
@@ -29,3 +32,12 @@
       tags: 
         - flame
         - containers
+
+    #
+    # Docker Services End
+    #
+
+    - role: filesystem/rclone
+      when: enable_rclone | default(False)
+      tags:
+        - rclone
