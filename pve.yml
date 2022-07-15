@@ -1,6 +1,7 @@
 ---
 - hosts: pve
   become: yes
+  become_user: "{{ ansible_user }}"
 
   roles:
 
@@ -25,6 +26,12 @@
       when: enable_nginx | default(False)
       tags: 
         - nginx
+        - containers
+
+    - role: containers/snippetbox
+      when: enable_snippetbox | default(False)
+      tags: 
+        - snippetbox
         - containers
 
     - role: containers/flame
