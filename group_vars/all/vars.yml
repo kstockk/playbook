@@ -17,6 +17,9 @@ docker_dir: /opt/docker/data
 
 scripts_dir: /opt/scripts
 
+#
 # geerlingguy.docker
+#
+
 docker_users:
   - "{{ ansible_user }}" 

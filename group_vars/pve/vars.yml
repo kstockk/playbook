@@ -16,10 +16,20 @@ extra_pip:
   - pyyaml
   - docker
 
+#
 # NFS Shares
+#
 
 # nfs_shares:
 #   - path: "/nfs_share"
+
+#
+# Rclone
+#
+
+enable_rclone: true
+
+rclone_config_location: "{{ ansible_user_dir }}/.config/rclone/rclone.conf"
 
 # Services
 
@@ -32,7 +42,5 @@ enable_homeassistant: true
 enable_nfs: true
 
 enable_nginx: true
-
-enable_rclone: true
 
 enable_snippetbox: true
