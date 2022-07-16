@@ -1,0 +1,38 @@
+
+# [pve:vars]
+
+#
+# Packages
+#
+
+extra_packages:
+  - qemu-guest-agent
+  - pip
+  - git
+  - vim
+
+extra_pip:
+  - glances
+  - pyyaml
+  - docker
+
+# NFS Shares
+
+# nfs_shares:
+#   - path: "/nfs_share"
+
+# Services
+
+enable_duckdns: true
+
+enable_flame: true
+
+enable_homeassistant: true
+
+enable_nfs: true
+
+enable_nginx: true
+
+enable_rclone: true
+
+enable_snippetbox: true

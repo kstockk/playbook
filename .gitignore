@@ -4,5 +4,5 @@ venv/
 secret.yml
 .DS_Store
 /hosts
-group_vars/
-host_vars/
+# group_vars/
+# host_vars/

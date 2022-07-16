@@ -1,0 +1,199 @@
+
+# [raspberry:vars]
+
+#
+# Standard
+#
+
+username: "pi"
+
+uid: "1000"
+
+#
+# Harddrive Idle
+#
+
+enable_hdidle: false
+
+spindown_time: 0 # in seconds; default is 600; 0 means disabled
+
+#
+# Pointer
+#
+
+pointer_root: /mnt/pointer
+
+pointer_drive: /dev/disk/by-label/pointer
+
+#
+# Time Machine
+#
+
+enable_timemachine: true
+
+timemachine_root: /mnt/timemachine
+
+timemachine_drive: /dev/disk/by-label/timemachine
+
+timemachine_backups:
+  - name: "Hourly Backup: {{ pointer_root }}"
+    hour: "*/1"
+    minute: "5"
+    src: "{{ pointer_root }}"
+    dest: "{{ timemachine_root }}/pointer"
+  - name: "Hourly Backup: Home Directories"
+    hour: "*/1"
+    minute: "35"
+    src: "/home"
+    dest: "{{ timemachine_root }}/home_backups"
+
+restore_from_timemachine: true
+
+#
+# Rclone
+#
+
+enable_rclone: true
+
+rclone_arch: "arm"
+
+# rclone_config_location: "/home/{{ username }}/.config/rclone/rclone.conf"
+
+rclone_backups:
+  - name: "Backup {{ pointer_root }} to Onedrive"
+    hour: "1"
+    minute: "5"
+    src: "{{ pointer_root }}"
+    dest: "encrypted:pointer"
+
+#
+# Docker Arm Configs
+#
+
+docker_version: latest
+
+docker_install_recommends: true
+
+docker_install_compose: true
+
+#
+# Directories
+#
+
+beancount_data: "{{ pointer_root }}/Ledger"
+
+garminexport_data: "{{ pointer_root }}/Other/Activities"
+
+#
+# Elevate
+#
+
+enable_elevate: true
+
+healthfit_data: "onedrive:Apps/HealthFit"
+
+elevate_data: "{{ pointer_root }}/Elevate"
+
+#
+# Packages
+#
+
+extra_packages:
+  - git
+  - vim
+  - screen
+
+extra_pip:
+  - glances
+  - pyyaml
+
+#
+# Email credentials
+#
+
+email_login: "{{ email }}"
+
+email_smtp_host: smtp.gmail.com
+
+email_smtp_port: 465
+
+email_smtp_port_startls: 587
+
+# MSMTP
+
+msmtp_accounts:
+- account:   gmail
+  host:      "{{ email_smtp_host }}"
+  port:      "{{ email_smtp_port_startls }}"
+  auth:      "on"
+  from:      "{{ email }}"
+  user:      "{{ email }}"
+  password:  "{{ email_password }}"
+
+msmtp_default_account: "gmail"
+
+msmtp_alias_default : "{{ email }}"
+
+#
+# Samba
+#
+
+enable_samba: true
+
+samba_users:
+  - name: "{{ username }}"
+    password: "{{ samba_passwd }}"
+
+samba_shares:
+  - name: pointer
+    path: "{{ pointer_root }}"
+    valid_users: "{{ username }}"
+  - name: timemachine
+    path: "{{ timemachine_root }}"
+    valid_users: "{{ username }}"
+
+#
+# Services
+#
+
+enable_pivpn: true
+
+enable_wireguard: false
+
+enable_duckdns: true
+
+enable_pihole: true
+
+enable_nginx: false
+
+enable_adguard: false
+
+enable_homer: false
+
+enable_resilio: true
+
+enable_unifi: true
+
+enable_portainer: true
+
+enable_homeassistant: true
+
+enable_zigbee2mqtt: true
+
+enable_photoprism: true
+
+enable_airsonic: true
+
+enable_beancount: true
+
+enable_actual: true
+
+enable_beets: true
+
+enable_nocodb: false
+
+enable_rpimonitor: false
+
+enable_garminexport: false
+
+enable_flame: true
