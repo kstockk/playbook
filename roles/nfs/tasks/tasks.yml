@@ -15,12 +15,19 @@
   with_items: 
     - nfs-kernel-server
 
+- name: Add home nfs_shares to /etc/exports
+  ansible.builtin.lineinfile:
+    path: /etc/exports
+    line: "/home/{{ ansible_user }} 192.168.1.0/24(rw,no_root_squash,all_squash,sync,no_subtree_check,anonuid={{ ansible_user_uid }},anongid={{ ansible_user_gid }},insecure)"
+    create: yes
+
 - name: Check if nfs_share directory exists
   stat:
     path: "{{ item }}"
   with_items:
     - "{{ nfs_shares }}"
   register: nfs_dirs
+  when: nfs_shares is defined
 
 - name: Create nfs_share directory if it doesn't already exist
   file:
@@ -31,6 +38,7 @@
     mode: "0775"
   with_items:
     - "{{ nfs_dirs.results }}"
+  when: nfs_dirs.results is defined
 
 - name: Add nfs_shares to /etc/exports
   ansible.builtin.lineinfile:
@@ -39,6 +47,7 @@
     create: yes
   with_items:
     - "{{ nfs_dirs.results }}"
+  when: nfs_dirs.results is defined
 
 - name: Restart NFS service
   service:
