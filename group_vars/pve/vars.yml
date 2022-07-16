@@ -43,4 +43,4 @@ enable_nfs: true
 
 enable_nginx: true
 
-enable_snippetbox: true
+enable_snippetbox: false
