@@ -1,0 +1,4 @@
+---
+- import_tasks: tasks.yml
+  become: yes
+  become_user: root

@@ -51,6 +51,11 @@
     # Docker Services End
     #
 
+    - role: nfs
+      when: enable_nfs | default(False)
+      tags:
+        - nfs
+
     - role: filesystem/rclone
       when: enable_rclone | default(False)
       tags:

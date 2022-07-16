@@ -1,0 +1,49 @@
+---
+- name: Install NFS
+  apt:
+    name: '{{ packages }}'
+    state: present
+  vars:
+    packages:
+      - nfs-kernel-server
+
+- name: Start NFS service
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  with_items: 
+    - nfs-kernel-server
+
+- name: Check if nfs_share directory exists
+  stat:
+    path: "{{ item }}"
+  with_items:
+    - "{{ nfs_shares }}"
+  register: nfs_dirs
+
+- name: Create nfs_share directory if it doesn't already exist
+  file:
+    path: "{{ item.item.path }}"
+    state: directory
+    owner: "65534"
+    group: "65534"
+    mode: "0775"
+  with_items:
+    - "{{ nfs_dirs.results }}"
+
+- name: Add nfs_shares to /etc/exports
+  ansible.builtin.lineinfile:
+    path: /etc/exports
+    line: "{{ item.item.path }} 192.168.1.0/24(rw,all_squash,sync,no_subtree_check,anonuid=65534,anongid=65534,insecure)"
+    create: yes
+  with_items:
+    - "{{ nfs_dirs.results }}"
+
+- name: Restart NFS service
+  service:
+    name: "{{ item }}"
+    state: restarted
+    enabled: true
+  with_items: 
+    - nfs-kernel-server
