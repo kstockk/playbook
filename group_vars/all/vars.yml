@@ -1,0 +1,22 @@
+
+# [all:vars]
+
+#
+# Standard
+#
+
+locale: en_AU.UTF-8
+
+timezone: "Australia/Melbourne"
+
+docker_dir: /opt/docker/data
+
+#
+# Docker
+#
+
+docker_dir: /opt/docker/data
+
+# geerlingguy.docker
+docker_users:
+  - "{{ ansible_user }}"
