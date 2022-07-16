@@ -2,6 +2,7 @@
 - hosts: pve
   become: yes
   become_user: "{{ ansible_user }}"
+  become_method: "sudo"
 
   roles:
 
@@ -28,11 +29,17 @@
         - nginx
         - containers
 
-    - role: containers/snippetbox
-      when: enable_snippetbox | default(False)
+    - role: containers/homeassistant
+      when: enable_homeassistant | default(False)
       tags: 
-        - snippetbox
+        - homeassistant
         - containers
+
+    # - role: containers/snippetbox
+    #   when: enable_snippetbox | default(False)
+    #   tags: 
+    #     - snippetbox
+    #     - containers
 
     - role: containers/flame
       when: enable_flame | default(False)

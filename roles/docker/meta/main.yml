@@ -1,2 +1,9 @@
 dependencies:
-  - "{{ 'geerlingguy.docker' if '{{ ansible_architecture }} != aarch64' else 'geerlingguy.docker_arm' }}"
+  - role: geerlingguy.docker
+    when: ansible_architecture != "aarch64"
+    become: yes
+    become_user: root
+  - role: geerlingguy.docker_arm
+    when: ansible_architecture == "aarch64"
+    become: yes
+    become_user: root
