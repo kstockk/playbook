@@ -2,5 +2,5 @@
 container_name: portainer
 flame:
   name: "Portainer"
-  url: "http://portainer.lab"
+  url: "http://portainer.{{ lab_network }}"
   icon: "docker"

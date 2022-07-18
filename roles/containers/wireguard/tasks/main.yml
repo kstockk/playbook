@@ -13,13 +13,14 @@
       - sys_module
     state: 'started'
     env:
-      "PUID": "{{ uid }}"
-      "PGID": "{{ uid }}"
-      "TZ": "{{ timezone }}"
-      "SERVERURL": "{{ duckdns_domain }}.duckdns.org"
-      "SERVERPORT": "51820"
-      "PEERS": "{{ ', '.join(wireguard_peers) }}"
-      "PEERDNS": "auto"
+      PUID="{{ ansible_user_uid }}"
+      PGID="{{ ansible_user_gid }}"
+      TZ="{{ timezone }}"
+      SERVERURL="{{ duckdns_domain }}.duckdns.org"
+      SERVERPORT="51820"
+      PEERS="{{ ', '.join(wireguard_peers) }}"
+      ALLOWEDIPS="0.0.0.0/0"
+      PEERDNS="{{ pi_hole }}"
     ports:
       - "51820/udp:51820/udp"
     volumes:

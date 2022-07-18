@@ -20,6 +20,7 @@ extra_pip:
 # NFS Shares
 #
 
+# these nfs shares will be with permissions 65534:65534
 # nfs_shares:
 #   - path: "/nfs_share"
 
@@ -44,3 +45,5 @@ enable_nfs: true
 enable_nginx: true
 
 enable_snippetbox: false
+
+enable_wireguard: true

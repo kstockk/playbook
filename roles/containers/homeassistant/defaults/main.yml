@@ -2,5 +2,5 @@
 container_name: homeassistant
 flame:
   name: "Home Assistant"
-  url: "http://home-assistant.lab"
+  url: "http://home-assistant.{{ lab_network }}"
   icon: "home-assistant"

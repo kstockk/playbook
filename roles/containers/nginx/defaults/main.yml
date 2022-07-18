@@ -3,5 +3,5 @@ container_name: nginx
 docker_image: "{{ 'jc21/mariadb-aria:latest' if '{{ ansible_architecture }} != aarch64' else 'arm64v8/mariadb:10.5' }}"
 flame:
   name: "Nginx Proxy Manager"
-  url: "http://npm.lab"
+  url: "http://npm.{{ lab_network }}"
   icon: "web"
