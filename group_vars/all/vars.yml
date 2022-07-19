@@ -15,7 +15,9 @@ timezone: "Australia/Melbourne"
 
 docker_dir: /opt/docker/data
 
-scripts_dir: /opt/scripts
+root_scripts_dir: /usr/local/sbin/scripts
+
+scripts_dir: /usr/local/bin/scripts
 
 #
 # geerlingguy.docker

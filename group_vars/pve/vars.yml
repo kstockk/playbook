@@ -30,7 +30,7 @@ extra_pip:
 
 enable_rclone: true
 
-rclone_config_location: "{{ ansible_user_dir }}/.config/rclone/rclone.conf"
+# rclone_config_location: "{{ ansible_user_dir }}/.config/rclone/rclone.conf"
 
 # Services
 

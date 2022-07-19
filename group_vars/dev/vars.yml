@@ -6,3 +6,5 @@
 enable_duckdns: false
 
 enable_flame: false
+
+enable_wireguard: false

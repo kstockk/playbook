@@ -1,9 +1,7 @@
 dependencies:
   - role: geerlingguy.docker
     when: ansible_architecture != "aarch64"
-    become: yes
-    become_user: root
+    become: true
   - role: geerlingguy.docker_arm
     when: ansible_architecture == "aarch64"
-    become: yes
-    become_user: root
+    become: true
