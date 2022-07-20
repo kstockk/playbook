@@ -6,11 +6,14 @@
 - name: Ensure that the {{ container_name }} MariaDB container is created and running
   docker_container:
     name: "photoprism-mariadb"
-    image: "arm64v8/mariadb:10.5"
+    image: "mariadb:10.8"
     pull: yes
-    command: "mysqld --transaction-isolation=READ-COMMITTED --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --max-connections=512 --innodb-rollback-on-timeout=OFF --innodb-lock-wait-timeout=50"
+    restart: yes
+    command: "mysqld --innodb-buffer-pool-size=512M --transaction-isolation=READ-COMMITTED --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --max-connections=512 --innodb-rollback-on-timeout=OFF --innodb-lock-wait-timeout=120"
     state: 'started'
     env:
+      "MARIADB_AUTO_UPGRADE": "1"
+      "MARIADB_INITDB_SKIP_TZINFO": "1"
       "MYSQL_ROOT_PASSWORD": "{{ mysql_root_password }}"
       "MYSQL_DATABASE": "{{ mysql_db }}"
       "MYSQL_USER": "{{ mysql_user }}"
@@ -26,11 +29,10 @@
 
 - name: Ensure that the {{ container_name }} container is created and running
   docker_container:
-    name: "{{ container_name }}"
+    name: "{{ container_name }}-app"
     image: photoprism/photoprism
     pull: yes
-    ports: 
-      - "2342:2342"
+    restart: yes
     security_opts:
       - seccomp:unconfined
       - apparmor:unconfined
@@ -47,7 +49,11 @@
       "PHOTOPRISM_DISABLE_WEBDAV": "false"
       "PHOTOPRISM_DISABLE_SETTINGS": "false"
       "PHOTOPRISM_DISABLE_TENSORFLOW": "false"
-      "PHOTOPRISM_DARKTABLE_PRESETS": "true"
+      "PHOTOPRISM_DISABLE_FACES": "false"
+      "PHOTOPRISM_DISABLE_CLASSIFICATION": "false"
+      "PHOTOPRISM_DISABLE_RAW": "false"
+      "PHOTOPRISM_RAW_PRESETS": "false"
+      "PHOTOPRISM_JPEG_QUALITY": "85" 
       "PHOTOPRISM_DETECT_NSFW": "false"
       "PHOTOPRISM_UPLOAD_NSFW": "true"
       "PHOTOPRISM_DATABASE_DRIVER": "mysql"
@@ -55,18 +61,22 @@
       "PHOTOPRISM_DATABASE_NAME": "{{ mysql_db }}"
       "PHOTOPRISM_DATABASE_USER": "{{ mysql_user }}"
       "PHOTOPRISM_DATABASE_PASSWORD": "{{ mysql_password }}"
-      "PHOTOPRISM_SITE_URL": "http://localhost:2342/"
+      "PHOTOPRISM_SITE_URL": "{{ flame.url }}"
       "PHOTOPRISM_SITE_TITLE": "PhotoPrism"
+      "PHOTOPRISM_UID": "1000"
+      "PHOTOPRISM_GID": "1000"
+      "PHOTOPRISM_UMASK": "0000"
+    user: "1000:1000"
     volumes:
-      - "{{ pointer_root }}/Pictures/photoprism:/photoprism/originals"
-      - "{{ pointer_root }}/Pictures/import:/photoprism/import"
-      - "{{ pointer_root }}/Pictures/photoprism_storage:/photoprism/storage"
-      - "{{ docker_dir }}/{{ container_name }}/cache:/photoprism/storage/cache"
+      - "{{ ansible_user_dir }}/Pictures/photoprism/originals:/photoprism/originals"
+      - "{{ ansible_user_dir }}/Pictures/photoprism/import:/photoprism/import"
+      - "{{ ansible_user_dir }}/Pictures/photoprism/storage:/photoprism/storage"
+      - "{{ ansible_user_dir }}/cache:/photoprism/storage/cache"
     restart_policy: unless-stopped
     networks:
       - name: "{{ container_name }}"
     labels:
       "flame.type": "application"
-      "flame.name": "{{ dashboard_name }}"
-      "flame.url": "{{ dashboard_url }}"
-      "flame.icon": "{{ dashboard_icon }}"
+      "flame.name": "{{ flame.name }}"
+      "flame.url": "{{ flame.url }}"
+      "flame.icon": "{{ flame.icon }}"

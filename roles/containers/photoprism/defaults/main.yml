@@ -1,7 +1,6 @@
 ---
 container_name: photoprism
-dashboard_name: "Photoprism"
-dashboard_category: "Media | Files"
-dashboard_subtitle: "Self-hosted Photo Library"
-dashboard_url: "http://{{ ansible_default_ipv4.address }}:2342/index"
-dashboard_icon: "image-album"
+flame:
+  name: "PhotoPrism"
+  url: "http://photoprism.{{ lab_network }}"
+  icon: "image-album"

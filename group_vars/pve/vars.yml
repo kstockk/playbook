@@ -44,6 +44,8 @@ enable_nfs: true
 
 enable_nginx: true
 
+enable_photoprism: true
+
 enable_snippetbox: false
 
 enable_wireguard: true

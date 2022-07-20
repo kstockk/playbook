@@ -1,8 +1,5 @@
 ---
 - hosts: pve
-  # become: true
-  # become_user: "{{ ansible_user }}"
-  # become_method: "sudo"
 
   roles:
 
@@ -39,6 +36,12 @@
       when: enable_homeassistant | default(False)
       tags: 
         - homeassistant
+        - containers
+
+    - role: containers/photoprism
+      when: enable_photoprism | default(False)
+      tags: 
+        - photoprism
         - containers
 
     - role: containers/snippetbox
